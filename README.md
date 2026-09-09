@@ -1,4 +1,5 @@
 # LocalDoc Markdown
+Diego Cortés C. <3
 
 [![CI](https://github.com/DiegoFCP/LocalDoc-Markdown/actions/workflows/ci.yml/badge.svg)](https://github.com/DiegoFCP/LocalDoc-Markdown/actions/workflows/ci.yml)
 
