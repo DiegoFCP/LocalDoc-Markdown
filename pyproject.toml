@@ -4,29 +4,31 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "localdoc-markdown"
-version = "0.1.2"
-description = "Local desktop, Streamlit, and pipeline tools around Microsoft MarkItDown with optional Tesseract OCR."
+version = "0.2.0"
+description = "Local Windows desktop app for converting private documents to Markdown with optional Tesseract OCR."
 readme = "README.md"
-requires-python = ">=3.10,<3.15"
+requires-python = ">=3.12,<3.15"
 dependencies = [
-    "markitdown[pdf,docx,pptx,xlsx,xls,outlook,audio-transcription,az-doc-intel,az-content-understanding]==0.1.6",
-    "pillow>=12.2.0",
-    "pytesseract>=0.3.13",
-    "streamlit>=1.58.0",
+    "markitdown[pdf,docx,pptx,xlsx,xls,outlook]==0.1.7",
+    "PySide6>=6.11,<6.12",
+    "pillow>=12,<13",
+    "pytesseract>=0.3.13,<0.4",
 ]
 
 [project.optional-dependencies]
-build = ["pyinstaller>=6.20.0"]
+build = ["pyinstaller>=6.22,<7"]
 dev = [
-    "pytest>=9.0.2",
-    "ruff>=0.14.9",
+    "pytest>=9,<10",
+    "pytest-qt>=4,<5",
+    "ruff>=0.14,<0.17",
 ]
 
 [tool.ruff]
 line-length = 100
 
 [tool.setuptools.packages.find]
-include = ["localdoc_markdown*"]
+where = [".", "src"]
+include = ["localdoc*", "localdoc_markdown*"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
