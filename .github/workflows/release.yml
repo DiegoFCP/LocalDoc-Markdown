@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Build desktop EXE
+        shell: powershell
+        run: .\scripts\Build-DesktopExe.ps1
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MarkItDownDesktop-Windows
+          path: dist\MarkItDownDesktop.exe
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          gh release create $env:GITHUB_REF_NAME `
+            dist\MarkItDownDesktop.exe `
+            --title "LocalDoc Markdown $env:GITHUB_REF_NAME" `
+            --notes "Windows desktop build for LocalDoc Markdown. Tesseract OCR must be installed separately for image OCR."

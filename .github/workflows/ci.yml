@@ -7,7 +7,13 @@ on:
 
 jobs:
   python:
-    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+        python-version: ["3.12", "3.14"]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
@@ -16,7 +22,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
@@ -25,3 +31,6 @@ jobs:
 
       - name: Compile apps
         run: python -m py_compile apps\desktop\app.py apps\streamlit\app.py
+
+      - name: Check dependencies
+        run: python -m pip check

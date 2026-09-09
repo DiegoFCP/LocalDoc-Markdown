@@ -108,7 +108,7 @@ class MarkItDownDesktopApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         ensure_dirs()
-        self.title("MarkItDown Desktop")
+        self.title("LocalDoc Markdown")
         self.geometry("980x680")
         self.minsize(840, 560)
 
@@ -141,7 +141,7 @@ class MarkItDownDesktopApp(tk.Tk):
 
         header = ttk.Frame(main)
         header.pack(fill=X)
-        ttk.Label(header, text="MarkItDown Desktop", style="Header.TLabel").pack(anchor="w")
+        ttk.Label(header, text="LocalDoc Markdown", style="Header.TLabel").pack(anchor="w")
         ttk.Label(
             header,
             text="Convierte documentos locales a Markdown y guarda un historial de conversiones.",

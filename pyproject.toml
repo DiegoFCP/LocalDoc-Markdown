@@ -1,5 +1,5 @@
 [project]
-name = "markitdown-workbench"
+name = "localdoc-markdown"
 version = "0.1.0"
 description = "Local desktop, Streamlit, and pipeline tools around Microsoft MarkItDown with optional Tesseract OCR."
 readme = "README.md"

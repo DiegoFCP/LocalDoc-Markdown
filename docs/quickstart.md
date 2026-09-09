@@ -20,6 +20,12 @@ Si no pasas ruta de salida, se crea un `.md` junto al archivo original.
 .\.venv\Scripts\markitdown.exe --version
 ```
 
+## Verificar todo el entorno
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Check-Environment.ps1
+```
+
 ## Nota sobre YouTube
 
 Este proyecto instala MarkItDown sin el extra de YouTube para mantener compatibilidad con Python 3.14 en esta estacion.
