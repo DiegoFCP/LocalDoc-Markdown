@@ -19,6 +19,13 @@ Or download `MarkItDownDesktop.exe` from Releases.
 
 Markdown files are written to the selected output folder.
 
+The desktop and Streamlit apps apply default safety limits:
+
+- Up to 100 files per batch.
+- Up to 100 MB per file.
+
+Files outside those limits are rejected before conversion with a visible message.
+
 ## Convert Images With OCR
 
 1. Install Tesseract OCR.
@@ -53,3 +60,5 @@ Logs and manifest are written to:
 ```text
 work\pipeline\logs
 ```
+
+The CSV manifests protect text fields that start with `=`, `+`, `-`, or `@` so spreadsheet tools do not interpret them as formulas.

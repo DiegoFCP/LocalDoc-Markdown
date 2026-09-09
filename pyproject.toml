@@ -1,6 +1,10 @@
+[build-system]
+requires = ["setuptools>=80.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "localdoc-markdown"
-version = "0.1.0"
+version = "0.1.2"
 description = "Local desktop, Streamlit, and pipeline tools around Microsoft MarkItDown with optional Tesseract OCR."
 readme = "README.md"
 requires-python = ">=3.10,<3.15"
@@ -13,6 +17,19 @@ dependencies = [
 
 [project.optional-dependencies]
 build = ["pyinstaller>=6.20.0"]
+dev = [
+    "pytest>=9.0.2",
+    "ruff>=0.14.9",
+]
 
 [tool.ruff]
 line-length = 100
+
+[tool.setuptools.packages.find]
+include = ["localdoc_markdown*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.2
+
+- Added shared `localdoc_markdown` core utilities for safe filenames, hashes, manifests, supported formats, and processing limits.
+- Added Pytest coverage for core safety behavior.
+- Added Ruff linting and Pytest execution to CI.
+- Added Dependabot and CodeQL workflows.
+- Added checksum generation for release EXE artifacts.
+- Hardened PowerShell scripts with native exit-code checks and safer CSV output.
+
 ## 0.1.0
 
 - Initial public version.

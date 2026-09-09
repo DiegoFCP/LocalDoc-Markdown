@@ -12,8 +12,9 @@ LocalDoc Markdown is a Windows-friendly workstation app for converting local doc
 - PowerShell CLI wrapper for one-off conversions.
 - Folder pipeline with SHA256 manifest to skip unchanged files.
 - OCR for images with Tesseract (`spa+eng` by default).
+- Shared Python core for hashing, filename safety, limits, manifests, and CSV protection.
 - PyInstaller build script for a standalone Windows EXE.
-- GitHub Actions CI and release workflow.
+- GitHub Actions CI, CodeQL, Dependabot, and release workflow with checksum.
 
 ## Supported Inputs
 
@@ -60,6 +61,14 @@ Validate the environment:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\Check-Environment.ps1
+```
+
+Run quality checks:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m ruff check .
+.\.venv\Scripts\python.exe -m pytest
 ```
 
 ## Streamlit UI
@@ -122,9 +131,16 @@ Output:
 dist\MarkItDownDesktop.exe
 ```
 
+GitHub Releases also attach:
+
+```text
+MarkItDownDesktop.exe.sha256
+```
+
 ## Project Layout
 
 ```text
+localdoc_markdown/  Shared conversion support utilities
 apps/desktop/       Tkinter desktop app
 apps/streamlit/     Streamlit app
 scripts/            Setup, run, conversion, pipeline, and build scripts
@@ -137,6 +153,8 @@ examples/           Sample input and output
 
 - The repository does not commit `.venv`, `work`, `dist`, or generated EXEs.
 - Tesseract OCR is required only for image OCR.
+- CSV manifests escape values that could be interpreted as formulas by Excel.
+- Desktop and Streamlit enforce initial processing limits of 100 files and 100 MB per file.
 - On Windows, use `scripts\Install-Tesseract-Windows.ps1` as a helper, or install Tesseract manually.
 - `ffmpeg` may be required by MarkItDown for some audio/video workflows.
 - The YouTube extra is intentionally not installed because it can be incompatible with Python 3.14.

@@ -1,22 +1,31 @@
 from __future__ import annotations
 
-import csv
-import hashlib
+import os
 import queue
-import re
-import threading
+import shutil
 import sys
+import threading
+import tkinter as tk
 from datetime import datetime
 from pathlib import Path
 from tkinter import BOTH, DISABLED, END, LEFT, NORMAL, RIGHT, X, filedialog, messagebox, ttk
-import tkinter as tk
-import os
-import shutil
 
+import pytesseract
 from markitdown import MarkItDown
 from PIL import Image
-import pytesseract
 
+from localdoc_markdown.core import (
+    DOCUMENT_TYPE_PATTERNS,
+    IMAGE_EXTENSIONS,
+    IMAGE_TYPE_PATTERNS,
+    FileLimits,
+    append_manifest,
+    ensure_manifest,
+    is_supported_file,
+    safe_stem,
+    sha256_file,
+    validate_file_limits,
+)
 
 APP_PATH = Path(__file__).resolve()
 if getattr(sys, "frozen", False):
@@ -32,76 +41,23 @@ DEFAULT_TESSERACT_PATHS = [
     Path(r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe"),
 ]
 
-SUPPORTED_EXTENSIONS = {
-    ".pdf",
-    ".docx",
-    ".doc",
-    ".pptx",
-    ".xlsx",
-    ".xls",
-    ".html",
-    ".htm",
-    ".txt",
-    ".csv",
-    ".json",
-    ".xml",
-    ".zip",
-    ".epub",
-    ".msg",
-    ".wav",
-    ".mp3",
-    ".jpg",
-    ".jpeg",
-    ".jfif",
-    ".png",
-    ".bmp",
-    ".tif",
-    ".tiff",
-    ".webp",
-}
-
-IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".jfif", ".png", ".bmp", ".tif", ".tiff", ".webp"}
+MANIFEST_FIELDS = [
+    "source_path",
+    "source_hash",
+    "output_path",
+    "status",
+    "converted_at",
+    "error",
+]
+SUPPORTED_FILE_PATTERNS = " ".join(DOCUMENT_TYPE_PATTERNS + IMAGE_TYPE_PATTERNS)
+FILE_LIMITS = FileLimits()
 
 
 def ensure_dirs() -> None:
     for path in (APP_DATA_DIR, UPLOAD_DIR, OUTPUT_DIR):
         path.mkdir(parents=True, exist_ok=True)
 
-    if not MANIFEST_PATH.exists():
-        MANIFEST_PATH.write_text(
-            "source_path,source_hash,output_path,status,converted_at,error\n",
-            encoding="utf-8",
-        )
-
-
-def safe_stem(name: str) -> str:
-    stem = Path(name).stem
-    cleaned = re.sub(r"[^A-Za-z0-9._-]+", "_", stem).strip("._")
-    return cleaned or "documento"
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as file:
-        for chunk in iter(lambda: file.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
-
-
-def append_manifest(row: dict[str, str]) -> None:
-    with MANIFEST_PATH.open("a", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(
-            file,
-            fieldnames=[
-                "source_path",
-                "source_hash",
-                "output_path",
-                "status",
-                "converted_at",
-                "error",
-            ],
-        )
-        writer.writerow(row)
+    ensure_manifest(MANIFEST_PATH, MANIFEST_FIELDS)
 
 
 class MarkItDownDesktopApp(tk.Tk):
@@ -151,10 +107,18 @@ class MarkItDownDesktopApp(tk.Tk):
         controls = ttk.Frame(main)
         controls.pack(fill=X, pady=(0, 12))
 
-        ttk.Button(controls, text="Agregar archivos", command=self.select_files).pack(side=LEFT, padx=(0, 8))
-        ttk.Button(controls, text="Agregar imagenes", command=self.select_images).pack(side=LEFT, padx=(0, 8))
-        ttk.Button(controls, text="Agregar carpeta", command=self.select_folder).pack(side=LEFT, padx=(0, 8))
-        ttk.Button(controls, text="Limpiar lista", command=self.clear_files).pack(side=LEFT, padx=(0, 8))
+        ttk.Button(controls, text="Agregar archivos", command=self.select_files).pack(
+            side=LEFT, padx=(0, 8)
+        )
+        ttk.Button(controls, text="Agregar imagenes", command=self.select_images).pack(
+            side=LEFT, padx=(0, 8)
+        )
+        ttk.Button(controls, text="Agregar carpeta", command=self.select_folder).pack(
+            side=LEFT, padx=(0, 8)
+        )
+        ttk.Button(controls, text="Limpiar lista", command=self.clear_files).pack(
+            side=LEFT, padx=(0, 8)
+        )
         self.convert_button = ttk.Button(
             controls,
             text="Convertir",
@@ -165,16 +129,26 @@ class MarkItDownDesktopApp(tk.Tk):
 
         output_frame = ttk.LabelFrame(main, text="Salida", padding=10)
         output_frame.pack(fill=X, pady=(0, 12))
-        ttk.Entry(output_frame, textvariable=self.output_dir_var).pack(side=LEFT, fill=X, expand=True, padx=(0, 8))
-        ttk.Button(output_frame, text="Cambiar", command=self.choose_output_dir).pack(side=LEFT, padx=(0, 8))
+        ttk.Entry(output_frame, textvariable=self.output_dir_var).pack(
+            side=LEFT, fill=X, expand=True, padx=(0, 8)
+        )
+        ttk.Button(output_frame, text="Cambiar", command=self.choose_output_dir).pack(
+            side=LEFT, padx=(0, 8)
+        )
         ttk.Button(output_frame, text="Abrir", command=self.open_output_dir).pack(side=LEFT)
 
         ocr_frame = ttk.LabelFrame(main, text="OCR para imagenes", padding=10)
         ocr_frame.pack(fill=X, pady=(0, 12))
         ttk.Label(ocr_frame, text="Ruta tesseract.exe").pack(side=LEFT, padx=(0, 8))
-        ttk.Entry(ocr_frame, textvariable=self.tesseract_path_var).pack(side=LEFT, fill=X, expand=True, padx=(0, 8))
-        ttk.Button(ocr_frame, text="Detectar", command=self.detect_tesseract_button).pack(side=LEFT, padx=(0, 8))
-        ttk.Button(ocr_frame, text="Elegir EXE", command=self.choose_tesseract).pack(side=LEFT, padx=(0, 8))
+        ttk.Entry(ocr_frame, textvariable=self.tesseract_path_var).pack(
+            side=LEFT, fill=X, expand=True, padx=(0, 8)
+        )
+        ttk.Button(ocr_frame, text="Detectar", command=self.detect_tesseract_button).pack(
+            side=LEFT, padx=(0, 8)
+        )
+        ttk.Button(ocr_frame, text="Elegir EXE", command=self.choose_tesseract).pack(
+            side=LEFT, padx=(0, 8)
+        )
         ttk.Label(ocr_frame, text="Idioma").pack(side=LEFT, padx=(0, 8))
         ttk.Entry(ocr_frame, textvariable=self.ocr_language_var, width=12).pack(side=LEFT)
 
@@ -217,9 +191,9 @@ class MarkItDownDesktopApp(tk.Tk):
         filenames = filedialog.askopenfilenames(
             title="Selecciona documentos",
             filetypes=[
-                ("Archivos compatibles", "*.pdf *.docx *.doc *.pptx *.xlsx *.xls *.html *.htm *.txt *.csv *.json *.xml *.zip *.epub *.msg *.wav *.mp3 *.jpg *.jpeg *.jfif *.png *.bmp *.tif *.tiff *.webp"),
-                ("Imagenes OCR", "*.jpg *.jpeg *.png *.bmp *.tif *.tiff *.webp"),
-                ("Documentos", "*.pdf *.docx *.doc *.pptx *.xlsx *.xls *.html *.htm *.txt *.csv *.json *.xml *.zip *.epub *.msg *.wav *.mp3"),
+                ("Archivos compatibles", SUPPORTED_FILE_PATTERNS),
+                ("Imagenes OCR", " ".join(IMAGE_TYPE_PATTERNS)),
+                ("Documentos", " ".join(DOCUMENT_TYPE_PATTERNS)),
                 ("Todos los archivos", "*.*"),
             ],
         )
@@ -229,7 +203,7 @@ class MarkItDownDesktopApp(tk.Tk):
         filenames = filedialog.askopenfilenames(
             title="Selecciona imagenes para OCR",
             filetypes=[
-                ("Imagenes OCR", "*.jpg *.jpeg *.jfif *.png *.bmp *.tif *.tiff *.webp"),
+                ("Imagenes OCR", " ".join(IMAGE_TYPE_PATTERNS)),
                 ("Todos los archivos", "*.*"),
             ],
         )
@@ -240,9 +214,7 @@ class MarkItDownDesktopApp(tk.Tk):
         if not folder:
             return
         files = [
-            path
-            for path in Path(folder).rglob("*")
-            if path.is_file() and path.suffix.lower() in SUPPORTED_EXTENSIONS
+            path for path in Path(folder).rglob("*") if is_supported_file(path)
         ]
         self.add_files(files)
 
@@ -251,10 +223,13 @@ class MarkItDownDesktopApp(tk.Tk):
         added = 0
         for path in files:
             resolved = path.resolve()
-            if resolved in existing or not path.is_file():
+            if resolved in existing or not is_supported_file(path):
                 continue
-            if path.suffix.lower() not in SUPPORTED_EXTENSIONS:
-                continue
+            try:
+                validate_file_limits(self.selected_files + [path], FILE_LIMITS)
+            except ValueError as exc:
+                messagebox.showwarning("Limite de archivos", str(exc))
+                break
             self.selected_files.append(path)
             self.file_list.insert(END, str(path))
             existing.add(resolved)
@@ -277,14 +252,19 @@ class MarkItDownDesktopApp(tk.Tk):
         filename = filedialog.askopenfilename(
             title="Selecciona tesseract.exe",
             initialdir=r"C:\Program Files\Tesseract-OCR",
-            filetypes=[("Tesseract", "tesseract.exe"), ("Ejecutables", "*.exe"), ("Todos los archivos", "*.*")],
+            filetypes=[
+                ("Tesseract", "tesseract.exe"),
+                ("Ejecutables", "*.exe"),
+                ("Todos los archivos", "*.*"),
+            ],
         )
         if filename and Path(filename).name.lower() == "tesseract.exe":
             self.tesseract_path_var.set(filename)
         elif filename:
             messagebox.showwarning(
                 "Archivo incorrecto",
-                "Ese campo debe apuntar a tesseract.exe. Para convertir imagenes usa Agregar imagenes.",
+                "Ese campo debe apuntar a tesseract.exe. "
+                "Para convertir imagenes usa Agregar imagenes.",
             )
 
     def detect_tesseract_button(self) -> None:
@@ -295,7 +275,8 @@ class MarkItDownDesktopApp(tk.Tk):
         else:
             messagebox.showwarning(
                 "Tesseract no detectado",
-                "No encontre tesseract.exe automaticamente. Usa Elegir EXE y selecciona el ejecutable de Tesseract.",
+                "No encontre tesseract.exe automaticamente. "
+                "Usa Elegir EXE y selecciona el ejecutable de Tesseract.",
             )
 
     def open_output_dir(self) -> None:
@@ -318,7 +299,11 @@ class MarkItDownDesktopApp(tk.Tk):
         self.is_busy = True
         self.convert_button.configure(state=DISABLED)
         self.status_var.set("Convirtiendo...")
-        thread = threading.Thread(target=self._convert_worker, args=(list(self.selected_files), output_dir), daemon=True)
+        thread = threading.Thread(
+            target=self._convert_worker,
+            args=(list(self.selected_files), output_dir),
+            daemon=True,
+        )
         thread.start()
 
     def _convert_worker(self, files: list[Path], output_dir: Path) -> None:
@@ -340,6 +325,8 @@ class MarkItDownDesktopApp(tk.Tk):
 
                 output_path.write_text(markdown, encoding="utf-8")
                 append_manifest(
+                    MANIFEST_PATH,
+                    MANIFEST_FIELDS,
                     {
                         "source_path": str(source),
                         "source_hash": digest,
@@ -354,6 +341,8 @@ class MarkItDownDesktopApp(tk.Tk):
             except Exception as exc:
                 errors += 1
                 append_manifest(
+                    MANIFEST_PATH,
+                    MANIFEST_FIELDS,
                     {
                         "source_path": str(source),
                         "source_hash": "",
@@ -372,7 +361,9 @@ class MarkItDownDesktopApp(tk.Tk):
             tesseract_path = self._detect_tesseract()
 
         if not tesseract_path:
-            raise RuntimeError("No se encontro tesseract.exe. Instala Tesseract OCR o selecciona la ruta.")
+            raise RuntimeError(
+                "No se encontro tesseract.exe. Instala Tesseract OCR o selecciona la ruta."
+            )
 
         executable = Path(tesseract_path)
         if not executable.exists() or executable.name.lower() != "tesseract.exe":

@@ -26,4 +26,8 @@ if ([string]::IsNullOrWhiteSpace($OutputPath)) {
 }
 
 & $MarkItDown $InputPath -o $OutputPath
+if ($LASTEXITCODE -ne 0) {
+    throw "markitdown finalizo con codigo $LASTEXITCODE"
+}
+
 Write-Host "Markdown generado en: $OutputPath"

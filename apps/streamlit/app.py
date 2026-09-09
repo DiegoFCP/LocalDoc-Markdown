@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import csv
-import hashlib
-import re
 import subprocess
 import sys
 from datetime import datetime
@@ -11,6 +8,16 @@ from pathlib import Path
 import streamlit as st
 from markitdown import MarkItDown
 
+from localdoc_markdown.core import (
+    SUPPORTED_TYPE_NAMES,
+    FileLimits,
+    append_manifest,
+    ensure_manifest,
+    read_manifest,
+    safe_filename,
+    sha256_bytes,
+    validate_named_sizes,
+)
 
 APP_PATH = Path(__file__).resolve()
 if getattr(sys, "frozen", False):
@@ -26,62 +33,23 @@ DEFAULT_PIPELINE_INPUT = WORKSPACE_ROOT / "work" / "pipeline" / "input"
 DEFAULT_PIPELINE_OUTPUT = WORKSPACE_ROOT / "work" / "pipeline" / "output"
 DEFAULT_PIPELINE_LOGS = WORKSPACE_ROOT / "work" / "pipeline" / "logs"
 
-SUPPORTED_TYPES = [
-    "pdf",
-    "docx",
-    "doc",
-    "pptx",
-    "xlsx",
-    "xls",
-    "html",
-    "htm",
-    "txt",
-    "csv",
-    "json",
-    "xml",
-    "zip",
-    "epub",
-    "msg",
-    "wav",
-    "mp3",
+MANIFEST_FIELDS = [
+    "source_name",
+    "source_hash",
+    "input_path",
+    "output_path",
+    "status",
+    "converted_at",
+    "error",
 ]
+FILE_LIMITS = FileLimits()
 
 
 def ensure_dirs() -> None:
     for path in (APP_DATA_DIR, UPLOAD_DIR, CONVERTED_DIR):
         path.mkdir(parents=True, exist_ok=True)
 
-    if not APP_MANIFEST.exists():
-        APP_MANIFEST.write_text(
-            "source_name,source_hash,input_path,output_path,status,converted_at,error\n",
-            encoding="utf-8",
-        )
-
-
-def safe_filename(filename: str) -> str:
-    cleaned = re.sub(r"[^A-Za-z0-9._-]+", "_", filename).strip("._")
-    return cleaned or "documento"
-
-
-def sha256_bytes(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest().upper()
-
-
-def append_manifest(row: dict[str, str]) -> None:
-    with APP_MANIFEST.open("a", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(
-            file,
-            fieldnames=[
-                "source_name",
-                "source_hash",
-                "input_path",
-                "output_path",
-                "status",
-                "converted_at",
-                "error",
-            ],
-        )
-        writer.writerow(row)
+    ensure_manifest(APP_MANIFEST, MANIFEST_FIELDS)
 
 
 @st.cache_resource(show_spinner=False)
@@ -104,6 +72,8 @@ def convert_upload(filename: str, content: bytes) -> tuple[Path, str]:
     output_path.write_text(markdown, encoding="utf-8")
 
     append_manifest(
+        APP_MANIFEST,
+        MANIFEST_FIELDS,
         {
             "source_name": filename,
             "source_hash": digest,
@@ -115,13 +85,6 @@ def convert_upload(filename: str, content: bytes) -> tuple[Path, str]:
         }
     )
     return output_path, markdown
-
-
-def read_csv(path: Path) -> list[dict[str, str]]:
-    if not path.exists():
-        return []
-    with path.open(newline="", encoding="utf-8") as file:
-        return list(csv.DictReader(file))
 
 
 def render_css() -> None:
@@ -151,7 +114,7 @@ def render_converter_tab() -> None:
     st.subheader("Convertir archivos")
     uploads = st.file_uploader(
         "Selecciona uno o mas documentos",
-        type=SUPPORTED_TYPES,
+        type=SUPPORTED_TYPE_NAMES,
         accept_multiple_files=True,
     )
 
@@ -162,10 +125,22 @@ def render_converter_tab() -> None:
         st.caption("Los resultados se guardan en work\\streamlit_app\\converted.")
 
     if not uploads:
-        st.info("Carga PDFs, Office, HTML, texto, datos o archivos comprimidos para generar Markdown.")
+        st.info(
+            "Carga PDFs, Office, HTML, texto, datos o archivos comprimidos para generar "
+            "Markdown."
+        )
         return
 
     if convert_clicked:
+        try:
+            validate_named_sizes(
+                [(upload.name, len(upload.getvalue())) for upload in uploads],
+                FILE_LIMITS,
+            )
+        except ValueError as exc:
+            st.error(str(exc))
+            return
+
         for upload in uploads:
             try:
                 output_path, markdown = convert_upload(upload.name, upload.getvalue())
@@ -185,6 +160,8 @@ def render_converter_tab() -> None:
                 )
             except Exception as exc:
                 append_manifest(
+                    APP_MANIFEST,
+                    MANIFEST_FIELDS,
                     {
                         "source_name": upload.name,
                         "source_hash": sha256_bytes(upload.getvalue()),
@@ -241,9 +218,9 @@ def render_pipeline_tab() -> None:
 
 def render_history_tab() -> None:
     st.subheader("Historial")
-    app_rows = read_csv(APP_MANIFEST)
+    app_rows = read_manifest(APP_MANIFEST)
     pipeline_manifest = DEFAULT_PIPELINE_LOGS / "manifest.csv"
-    pipeline_rows = read_csv(pipeline_manifest)
+    pipeline_rows = read_manifest(pipeline_manifest)
 
     col_a, col_b, col_c = st.columns(3)
     col_a.metric("Conversiones UI", len(app_rows))
@@ -272,7 +249,10 @@ def main() -> None:
     render_css()
 
     st.title("MarkItDown Workbench")
-    st.caption("Conversion de documentos a Markdown para analisis, busqueda y pipelines documentales.")
+    st.caption(
+        "Conversion de documentos a Markdown para analisis, busqueda y pipelines "
+        "documentales."
+    )
 
     tab_convert, tab_pipeline, tab_history = st.tabs(["Convertir", "Pipeline", "Historial"])
     with tab_convert:

@@ -44,3 +44,15 @@ This bypasses policy only for that command.
 ## GitHub Release EXE Does Not OCR Images
 
 The EXE includes the Python OCR wrapper but does not bundle the native Tesseract OCR engine. Install Tesseract separately on Windows.
+
+## A File Is Rejected Before Conversion
+
+The apps protect the workstation with conservative default limits: 100 files per batch and 100 MB per file. Split the batch or reduce very large source files before converting.
+
+## Verify A Downloaded EXE
+
+Download `MarkItDownDesktop.exe.sha256` from the same release and compare it with:
+
+```powershell
+Get-FileHash -LiteralPath .\MarkItDownDesktop.exe -Algorithm SHA256
+```

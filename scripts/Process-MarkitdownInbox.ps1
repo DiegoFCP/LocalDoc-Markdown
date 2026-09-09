@@ -43,6 +43,17 @@ function Write-RunLog {
     Write-Host $line
 }
 
+function Protect-CsvValue {
+    param([string]$Value)
+    if ([string]::IsNullOrEmpty($Value)) {
+        return ""
+    }
+    if ($Value.StartsWith("=") -or $Value.StartsWith("+") -or $Value.StartsWith("-") -or $Value.StartsWith("@")) {
+        return "'$Value"
+    }
+    return $Value
+}
+
 function Get-FileSha256 {
     param([string]$Path)
     return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash
@@ -105,9 +116,9 @@ foreach ($file in $files) {
     if (-not $Force -and $existing -and $existing.source_hash -eq $hash -and (Test-Path -LiteralPath $outputPath)) {
         Write-RunLog "SKIP $relativePath"
         $newRows.Add([pscustomobject]@{
-            source_path = $sourcePath
+            source_path = Protect-CsvValue $sourcePath
             source_hash = $hash
-            output_path = $outputPath
+            output_path = Protect-CsvValue $outputPath
             status = "skipped"
             converted_at = $existing.converted_at
             error = ""
@@ -123,9 +134,9 @@ foreach ($file in $files) {
         }
 
         $newRows.Add([pscustomobject]@{
-            source_path = $sourcePath
+            source_path = Protect-CsvValue $sourcePath
             source_hash = $hash
-            output_path = $outputPath
+            output_path = Protect-CsvValue $outputPath
             status = "converted"
             converted_at = (Get-Date).ToString("s")
             error = ""
@@ -134,12 +145,12 @@ foreach ($file in $files) {
     catch {
         Write-RunLog "ERROR $relativePath $($_.Exception.Message)"
         $newRows.Add([pscustomobject]@{
-            source_path = $sourcePath
+            source_path = Protect-CsvValue $sourcePath
             source_hash = $hash
-            output_path = $outputPath
+            output_path = Protect-CsvValue $outputPath
             status = "error"
             converted_at = (Get-Date).ToString("s")
-            error = $_.Exception.Message.Replace('"', "'")
+            error = Protect-CsvValue ($_.Exception.Message.Replace('"', "'"))
         })
     }
 }

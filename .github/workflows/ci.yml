@@ -27,10 +27,16 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          python -m pip install -e ".[dev]"
+
+      - name: Lint
+        run: python -m ruff check .
 
       - name: Compile apps
-        run: python -m py_compile apps\desktop\app.py apps\streamlit\app.py
+        run: python -m py_compile apps\desktop\app.py apps\streamlit\app.py localdoc_markdown\core.py
 
       - name: Check dependencies
         run: python -m pip check
+
+      - name: Test
+        run: python -m pytest

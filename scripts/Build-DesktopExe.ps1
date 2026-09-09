@@ -8,6 +8,20 @@ $RepoRoot = Split-Path -Parent $PSScriptRoot
 $VenvPython = Join-Path $RepoRoot ".venv\Scripts\python.exe"
 $App = Join-Path $RepoRoot "apps\desktop\app.py"
 
+function Invoke-NativeCommand {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$FilePath,
+
+        [string[]]$Arguments
+    )
+
+    & $FilePath @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        throw "$FilePath finalizo con codigo $LASTEXITCODE"
+    }
+}
+
 if ([string]::IsNullOrWhiteSpace($PythonExe)) {
     if (Test-Path -LiteralPath $VenvPython) {
         $PythonExe = $VenvPython
@@ -26,20 +40,31 @@ Set-Location $RepoRoot
 
 Write-Host "Usando Python: $PythonExe"
 
-& $PythonExe -m pip install "pyinstaller>=6.20.0"
-& $PythonExe -m PyInstaller `
-    --noconfirm `
-    --clean `
-    --windowed `
-    --onefile `
-    --name MarkItDownDesktop `
-    --distpath dist `
-    --workpath work\pyinstaller-build `
-    --specpath work\pyinstaller-spec `
-    --collect-all magika `
-    --collect-all markitdown `
-    --collect-all pytesseract `
-    --collect-all PIL `
+Invoke-NativeCommand -FilePath $PythonExe -Arguments @("-m", "pip", "install", "pyinstaller>=6.20.0")
+Invoke-NativeCommand -FilePath $PythonExe -Arguments @(
+    "-m",
+    "PyInstaller",
+    "--noconfirm",
+    "--clean",
+    "--windowed",
+    "--onefile",
+    "--name",
+    "MarkItDownDesktop",
+    "--distpath",
+    "dist",
+    "--workpath",
+    "work\pyinstaller-build",
+    "--specpath",
+    "work\pyinstaller-spec",
+    "--collect-all",
+    "magika",
+    "--collect-all",
+    "markitdown",
+    "--collect-all",
+    "pytesseract",
+    "--collect-all",
+    "PIL",
     $App
+)
 
 Write-Host "EXE generado en: $RepoRoot\dist\MarkItDownDesktop.exe"
