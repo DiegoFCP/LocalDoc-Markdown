@@ -14,7 +14,6 @@ from PySide6.QtWidgets import (
     QLabel,
     QMainWindow,
     QMessageBox,
-    QPushButton,
     QSplitter,
     QTableWidget,
     QTableWidgetItem,
@@ -29,6 +28,7 @@ from localdoc.domain.enums import JobStatus
 from localdoc.domain.exceptions import LocalDocError
 from localdoc.domain.models import P0_EXTENSIONS, ConversionJob
 from localdoc.infrastructure.tesseract_adapter import TesseractAdapter
+from localdoc.ui.components import GhostButton, PrimaryButton, SecondaryButton
 from localdoc.ui.dialogs.settings_dialog import SettingsDialog
 from localdoc.ui.models.queue_table_model import STATUS_LABELS, job_row
 from localdoc.ui.widgets.drop_zone import DropZone
@@ -96,7 +96,11 @@ class MainWindow(QMainWindow):
         self.engine_status.setObjectName("Pill")
         self.ocr_status = QLabel("OCR: verificando")
         self.ocr_status.setObjectName("Pill")
-        settings = QPushButton("Configuracion")
+        settings = GhostButton(
+            "Configuracion",
+            tooltip="Abrir configuracion",
+            accessible_name="Configuracion",
+        )
         settings.clicked.connect(self._open_settings)
 
         layout.addWidget(brand)
@@ -123,11 +127,22 @@ class MainWindow(QMainWindow):
         self.drop_zone.browse_requested.connect(self._browse_files)
 
         actions = QHBoxLayout()
-        self.convert_button = QPushButton("Convertir")
-        self.convert_button.setObjectName("PrimaryButton")
-        self.cancel_button = QPushButton("Cancelar")
-        self.retry_button = QPushButton("Reintentar error")
-        self.clear_button = QPushButton("Limpiar finalizados")
+        self.convert_button = PrimaryButton(
+            "Convertir",
+            tooltip="Convertir archivos pendientes",
+        )
+        self.cancel_button = SecondaryButton(
+            "Cancelar",
+            tooltip="Solicitar cancelacion de la conversion activa",
+        )
+        self.retry_button = SecondaryButton(
+            "Reintentar error",
+            tooltip="Reintentar el archivo seleccionado con error",
+        )
+        self.clear_button = SecondaryButton(
+            "Limpiar finalizados",
+            tooltip="Quitar de la lista los archivos completados, cancelados o con error",
+        )
         self.convert_button.clicked.connect(self._start_conversion)
         self.cancel_button.clicked.connect(self._cancel_conversion)
         self.retry_button.clicked.connect(self._retry_selected)
@@ -175,9 +190,18 @@ class MainWindow(QMainWindow):
         self.detail_error.setWordWrap(True)
 
         grid = QGridLayout()
-        self.copy_button = QPushButton("Copiar Markdown")
-        self.open_file_button = QPushButton("Abrir archivo")
-        self.open_folder_button = QPushButton("Abrir carpeta")
+        self.copy_button = SecondaryButton(
+            "Copiar Markdown",
+            tooltip="Copiar la vista Markdown al portapapeles",
+        )
+        self.open_file_button = SecondaryButton(
+            "Abrir archivo",
+            tooltip="Abrir el archivo Markdown generado",
+        )
+        self.open_folder_button = SecondaryButton(
+            "Abrir carpeta",
+            tooltip="Abrir la carpeta de salida",
+        )
         self.copy_button.clicked.connect(self._copy_markdown)
         self.open_file_button.clicked.connect(self._open_output_file)
         self.open_folder_button.clicked.connect(self._open_output_folder)

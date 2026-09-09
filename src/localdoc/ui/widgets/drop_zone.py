@@ -3,7 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout
+from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout
+
+from localdoc.ui.components import SecondaryButton
 
 
 class DropZone(QFrame):
@@ -29,8 +31,10 @@ class DropZone(QFrame):
         subtitle.setObjectName("Muted")
         subtitle.setWordWrap(True)
 
-        button = QPushButton("Seleccionar archivos")
-        button.setObjectName("PrimaryButton")
+        button = SecondaryButton(
+            "Seleccionar archivos",
+            tooltip="Seleccionar documentos locales para convertir",
+        )
         button.clicked.connect(self.browse_requested.emit)
 
         layout.addStretch(1)
@@ -50,4 +54,3 @@ class DropZone(QFrame):
         if paths:
             self.files_dropped.emit(paths)
         event.acceptProposedAction()
-

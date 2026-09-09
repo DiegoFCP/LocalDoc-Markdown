@@ -21,6 +21,7 @@
 - Removed the legacy Tkinter app, Streamlit app, CLI conversion wrapper, folder pipeline, and old shared package from the product surface.
 - Added hardening coverage for duplicate queue items, deleted queued files, queue limits, long Unicode names, output collisions, timeout handling, and missing OCR engine errors.
 - Added a committed PyInstaller spec for the Windows `onedir` build and updated release automation to publish `LocalDoc-Windows.zip` plus SHA256 checksum.
+- Added UX-1 design system foundations with reusable tokens, light/dark theme generation, focus states, and button components.
 
 ## 0.1.2
 

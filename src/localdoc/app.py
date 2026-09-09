@@ -10,7 +10,7 @@ from localdoc.infrastructure.logging_config import configure_logging
 from localdoc.infrastructure.paths import get_default_paths
 from localdoc.infrastructure.tesseract_adapter import TesseractAdapter
 from localdoc.ui.main_window import MainWindow
-from localdoc.ui.theme import APP_STYLESHEET
+from localdoc.ui.theme import ThemeManager
 
 
 def main() -> int:
@@ -21,7 +21,7 @@ def main() -> int:
 
     app = QApplication(sys.argv)
     app.setApplicationName("LocalDoc")
-    app.setStyleSheet(APP_STYLESHEET)
+    ThemeManager().apply(app)
 
     settings_service = build_settings_service(paths)
     manager = build_conversion_manager(paths)

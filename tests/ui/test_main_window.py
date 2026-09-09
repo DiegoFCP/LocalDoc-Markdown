@@ -44,6 +44,9 @@ def test_main_window_initializes(tmp_path: Path, qtbot) -> None:
     assert window.windowTitle() == "LocalDoc"
     assert window.table.rowCount() == 0
     assert "OCR no disponible" in window.ocr_status.text()
+    assert window.convert_button.objectName() == "PrimaryButton"
+    assert window.cancel_button.objectName() == "SecondaryButton"
+    assert window.convert_button.accessibleName() == "Convertir"
 
 
 def test_main_window_adds_file_to_queue(tmp_path: Path, qtbot) -> None:

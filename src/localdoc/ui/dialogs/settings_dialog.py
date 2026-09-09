@@ -9,12 +9,12 @@ from PySide6.QtWidgets import (
     QFormLayout,
     QHBoxLayout,
     QLineEdit,
-    QPushButton,
     QSpinBox,
     QVBoxLayout,
 )
 
 from localdoc.domain.models import AppSettings, FileLimits
+from localdoc.ui.components import PrimaryButton, SecondaryButton
 
 
 class SettingsDialog(QDialog):
@@ -48,9 +48,8 @@ class SettingsDialog(QDialog):
         form.addRow("Timeout por archivo", self.timeout)
 
         buttons = QHBoxLayout()
-        save = QPushButton("Guardar")
-        save.setObjectName("PrimaryButton")
-        cancel = QPushButton("Cancelar")
+        save = PrimaryButton("Guardar", tooltip="Guardar configuracion")
+        cancel = SecondaryButton("Cancelar", tooltip="Cerrar sin guardar cambios")
         save.clicked.connect(self.accept)
         cancel.clicked.connect(self.reject)
         buttons.addStretch(1)
@@ -77,7 +76,7 @@ class SettingsDialog(QDialog):
 
     def _path_row(self, line_edit: QLineEdit, callback) -> QHBoxLayout:
         row = QHBoxLayout()
-        button = QPushButton("Elegir")
+        button = SecondaryButton("Elegir", tooltip="Seleccionar ruta")
         button.clicked.connect(callback)
         row.addWidget(line_edit)
         row.addWidget(button)
@@ -97,4 +96,3 @@ class SettingsDialog(QDialog):
         )
         if selected:
             self.tesseract_path.setText(selected)
-
