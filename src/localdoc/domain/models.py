@@ -36,6 +36,7 @@ P0_EXTENSIONS = {
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".webp"}
 CSV_FORMULA_PREFIXES = ("=", "+", "-", "@")
+MAX_SAFE_STEM_LENGTH = 120
 
 
 @dataclass(frozen=True)
@@ -158,7 +159,7 @@ def safe_filename(filename: str) -> str:
     path = Path(filename).name
     stem = re.sub(r"[^A-Za-z0-9._-]+", "_", Path(path).stem).strip("._")
     suffix = re.sub(r"[^A-Za-z0-9.]+", "", Path(path).suffix)
-    return f"{stem or 'documento'}{suffix.lower()}"
+    return f"{(stem or 'documento')[:MAX_SAFE_STEM_LENGTH]}{suffix.lower()}"
 
 
 def safe_stem(filename: str) -> str:

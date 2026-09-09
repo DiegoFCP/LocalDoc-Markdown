@@ -1,64 +1,43 @@
 # User Guide
 
-## Desktop App
-
-Run from source:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Run-Desktop.ps1
-```
-
-Or download `MarkItDownDesktop.exe` from Releases.
-
 ## Convert Documents
 
-1. Click `Agregar archivos`.
-2. Select one or more supported documents.
-3. Choose an output folder.
-4. Click `Convertir`.
+1. Open LocalDoc.
+2. Drop files into the input area, or use `Seleccionar archivos`.
+3. Confirm the output folder in settings if needed.
+4. Start the conversion.
+5. Select a completed row to preview, copy, or open the Markdown output.
 
-Markdown files are written to the selected output folder.
+Markdown files are written to the configured output folder. By default, LocalDoc uses:
 
-The desktop and Streamlit apps apply default safety limits:
+```text
+%USERPROFILE%\Documents\LocalDoc\Markdown
+```
 
-- Up to 100 files per batch.
-- Up to 100 MB per file.
+Local technical data such as settings, logs, and SQLite history is stored under:
 
-Files outside those limits are rejected before conversion with a visible message.
+```text
+%LOCALAPPDATA%\LocalDoc
+```
 
-## Convert Images With OCR
+## OCR For Images
+
+LocalDoc uses Tesseract only for image files.
 
 1. Install Tesseract OCR.
-2. Click `Detectar` in the OCR section.
-3. Confirm the Tesseract path.
-4. Keep language as `spa+eng` or change it.
-5. Click `Agregar imagenes`.
-6. Click `Convertir`.
+2. Open settings.
+3. Enable OCR.
+4. Confirm the `tesseract.exe` path.
+5. Use `spa+eng`, or any language code installed in Tesseract.
 
-## Pipeline Mode
+If a language is missing, install its Tesseract language data and try again.
 
-Place files in:
+## Limits
 
-```text
-work\pipeline\input
-```
+The first desktop release applies conservative limits:
 
-Run:
+- Up to 100 files per queue.
+- Up to 100 MB per file.
+- Per-file timeout from settings.
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Process-MarkitdownInbox.ps1
-```
-
-Converted Markdown appears in:
-
-```text
-work\pipeline\output
-```
-
-Logs and manifest are written to:
-
-```text
-work\pipeline\logs
-```
-
-The CSV manifests protect text fields that start with `=`, `+`, `-`, or `@` so spreadsheet tools do not interpret them as formulas.
+Files over those limits are rejected before conversion.

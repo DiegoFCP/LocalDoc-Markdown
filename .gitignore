@@ -13,6 +13,7 @@ work/
 dist/
 build/
 *.spec
+!packaging/*.spec
 
 *.log
 *.tmp

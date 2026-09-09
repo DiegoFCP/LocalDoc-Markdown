@@ -18,6 +18,9 @@
 - Added integration tests for process-based conversion and timeout behavior.
 - Added UI smoke tests for LocalDoc main window, queue population, and preview rendering.
 - Updated runtime dependency direction for LocalDoc 0.2: PySide6, MarkItDown 0.1.7, Tesseract OCR, and Desktop-only extras.
+- Removed the legacy Tkinter app, Streamlit app, CLI conversion wrapper, folder pipeline, and old shared package from the product surface.
+- Added hardening coverage for duplicate queue items, deleted queued files, queue limits, long Unicode names, output collisions, timeout handling, and missing OCR engine errors.
+- Added a committed PyInstaller spec for the Windows `onedir` build and updated release automation to publish `LocalDoc-Windows.zip` plus SHA256 checksum.
 
 ## 0.1.2
 

@@ -27,8 +27,8 @@ dev = [
 line-length = 100
 
 [tool.setuptools.packages.find]
-where = [".", "src"]
-include = ["localdoc*", "localdoc_markdown*"]
+where = ["src"]
+include = ["localdoc*"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

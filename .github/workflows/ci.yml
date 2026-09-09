@@ -33,7 +33,7 @@ jobs:
         run: python -m ruff check .
 
       - name: Compile apps
-        run: python -m py_compile apps\desktop\app.py apps\streamlit\app.py localdoc_markdown\core.py
+        run: python -m compileall -q src tests
 
       - name: Check dependencies
         run: python -m pip check

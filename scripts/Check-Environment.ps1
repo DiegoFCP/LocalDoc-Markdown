@@ -2,7 +2,6 @@ $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $Python = Join-Path $RepoRoot ".venv\Scripts\python.exe"
-$MarkItDown = Join-Path $RepoRoot ".venv\Scripts\markitdown.exe"
 $Tesseract = "C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 if (-not (Test-Path -LiteralPath $Python)) {
@@ -14,16 +13,13 @@ Write-Host "Python"
 
 Write-Host "`nPython packages"
 & $Python -m pip show markitdown
-& $Python -m pip show streamlit
+& $Python -m pip show PySide6
 & $Python -m pip show pytesseract
 & $Python -m pip show pillow
 & $Python -m pip show pyinstaller
 
 Write-Host "`nImports"
-& $Python -c "import markitdown, streamlit, pytesseract; from PIL import Image; print('imports ok')"
-
-Write-Host "`nMarkItDown"
-& $MarkItDown --version
+& $Python -c "import markitdown, pytesseract; from PIL import Image; from PySide6.QtWidgets import QApplication; print('imports ok')"
 
 Write-Host "`nDependency check"
 & $Python -m pip check

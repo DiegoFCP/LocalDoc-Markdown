@@ -33,11 +33,14 @@ class ConversionManager:
 
     def add_files(self, paths: list[Path]) -> list[ConversionJob]:
         existing = {job.source_path for job in self.jobs}
-        new_jobs = [
-            ConversionJob(path)
-            for path in paths
-            if path.expanduser().resolve() not in existing
-        ]
+        seen = set(existing)
+        new_jobs = []
+        for path in paths:
+            resolved_path = path.expanduser().resolve()
+            if resolved_path in seen:
+                continue
+            seen.add(resolved_path)
+            new_jobs.append(ConversionJob(resolved_path))
         validate_jobs(self.jobs + new_jobs, self.settings.file_limits)
         self.jobs.extend(new_jobs)
         for job in new_jobs:

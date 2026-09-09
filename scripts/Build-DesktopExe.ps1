@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $VenvPython = Join-Path $RepoRoot ".venv\Scripts\python.exe"
-$App = Join-Path $RepoRoot "apps\desktop\app.py"
+$SpecFile = Join-Path $RepoRoot "packaging\LocalDoc.spec"
 
 function Invoke-NativeCommand {
     param(
@@ -41,30 +41,31 @@ Set-Location $RepoRoot
 Write-Host "Usando Python: $PythonExe"
 
 Invoke-NativeCommand -FilePath $PythonExe -Arguments @("-m", "pip", "install", "pyinstaller>=6.20.0")
+Invoke-NativeCommand -FilePath $PythonExe -Arguments @("-m", "pip", "install", "-e", ".[build]")
 Invoke-NativeCommand -FilePath $PythonExe -Arguments @(
     "-m",
     "PyInstaller",
-    "--noconfirm",
     "--clean",
-    "--windowed",
-    "--onefile",
-    "--name",
-    "MarkItDownDesktop",
-    "--distpath",
-    "dist",
-    "--workpath",
-    "work\pyinstaller-build",
-    "--specpath",
-    "work\pyinstaller-spec",
-    "--collect-all",
-    "magika",
-    "--collect-all",
-    "markitdown",
-    "--collect-all",
-    "pytesseract",
-    "--collect-all",
-    "PIL",
-    $App
+    "--noconfirm",
+    $SpecFile
 )
 
-Write-Host "EXE generado en: $RepoRoot\dist\MarkItDownDesktop.exe"
+$ExePath = Join-Path $RepoRoot "dist\LocalDoc\LocalDoc.exe"
+if (-not (Test-Path -LiteralPath $ExePath)) {
+    throw "No se genero $ExePath"
+}
+
+$ChecksumPath = Join-Path $RepoRoot "dist\LocalDoc.exe.sha256"
+Get-FileHash -LiteralPath $ExePath -Algorithm SHA256 |
+    ForEach-Object { "$($_.Hash)  LocalDoc.exe" } |
+    Set-Content -LiteralPath $ChecksumPath -Encoding ascii
+
+$ZipPath = Join-Path $RepoRoot "dist\LocalDoc-Windows.zip"
+if (Test-Path -LiteralPath $ZipPath) {
+    Remove-Item -LiteralPath $ZipPath -Force
+}
+Compress-Archive -LiteralPath (Join-Path $RepoRoot "dist\LocalDoc") -DestinationPath $ZipPath -Force
+
+Write-Host "EXE generado en: $ExePath"
+Write-Host "Checksum generado en: $ChecksumPath"
+Write-Host "Paquete portable generado en: $ZipPath"

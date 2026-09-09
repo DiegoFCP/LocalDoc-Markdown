@@ -6,7 +6,13 @@ import pytest
 
 from localdoc.domain.enums import ConversionStrategy, JobStatus
 from localdoc.domain.exceptions import InvalidStateTransitionError, UnsupportedFileError
-from localdoc.domain.models import ConversionJob, FileLimits, safe_filename, validate_jobs
+from localdoc.domain.models import (
+    ConversionJob,
+    FileLimits,
+    safe_filename,
+    safe_stem,
+    validate_jobs,
+)
 
 
 def test_conversion_job_sets_document_strategy(tmp_path: Path) -> None:
@@ -91,3 +97,12 @@ def test_validate_jobs_rejects_too_many(tmp_path: Path) -> None:
 
 def test_safe_filename_normalizes_extension() -> None:
     assert safe_filename("../Mi Archivo!!.PDF") == "Mi_Archivo.pdf"
+
+
+def test_safe_stem_handles_unicode_and_long_names() -> None:
+    long_name = "á" * 8 + "documento-" + ("x" * 300) + ".PDF"
+
+    stem = safe_stem(long_name)
+
+    assert stem.startswith("documento-")
+    assert len(stem) <= 120
