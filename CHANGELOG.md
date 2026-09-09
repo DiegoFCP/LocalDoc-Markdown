@@ -9,7 +9,10 @@
 - Added settings persistence using `%LOCALAPPDATA%\LocalDoc`.
 - Added MarkItDown and Tesseract adapters.
 - Added local rotating logging setup.
+- Added a process-isolated conversion runner with per-file timeout handling.
+- Expanded `ConversionManager` with batch processing, pending cancellation, active cancellation request, retry, and clear-finished behavior.
 - Added unit tests for domain, settings, filesystem, SQLite persistence, and conversion manager behavior.
+- Added integration tests for process-based conversion and timeout behavior.
 - Updated runtime dependency direction for LocalDoc 0.2: PySide6, MarkItDown 0.1.7, Tesseract OCR, and Desktop-only extras.
 
 ## 0.1.2

@@ -62,4 +62,11 @@ MarkItDown and Tesseract are wrapped behind adapters. This keeps UI and applicat
 
 ## Current Phase
 
-This document describes the Phase 1 foundation. The final PySide6 UI, process-isolated worker implementation, packaging changes, and desktop-only documentation rewrite are intentionally left for later phases.
+Phase 2 adds the conversion engine foundation:
+
+- `ConversionManager` can add files, process one job, process a batch, cancel pending jobs, request active cancellation, retry failed jobs, and clear finished jobs.
+- `ProcessConversionRunner` executes one conversion at a time in a spawned process and enforces a per-file timeout.
+- `ConversionService` remains available for direct service tests and non-process adapters.
+- The process runner creates MarkItDown and Tesseract adapters inside the child process so the UI layer does not depend on those third-party APIs.
+
+The final PySide6 UI, polished worker progress signals, packaging changes, and desktop-only documentation rewrite are intentionally left for later phases.
