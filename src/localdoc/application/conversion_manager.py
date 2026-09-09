@@ -32,7 +32,12 @@ class ConversionManager:
         self._worker_thread: threading.Thread | None = None
 
     def add_files(self, paths: list[Path]) -> list[ConversionJob]:
-        new_jobs = [ConversionJob(path) for path in paths]
+        existing = {job.source_path for job in self.jobs}
+        new_jobs = [
+            ConversionJob(path)
+            for path in paths
+            if path.expanduser().resolve() not in existing
+        ]
         validate_jobs(self.jobs + new_jobs, self.settings.file_limits)
         self.jobs.extend(new_jobs)
         for job in new_jobs:
@@ -87,6 +92,9 @@ class ConversionManager:
         self._cancel_requested.clear()
         self._worker_thread = threading.Thread(target=self.run_all, daemon=True)
         self._worker_thread.start()
+
+    def is_running(self) -> bool:
+        return self._worker_thread is not None and self._worker_thread.is_alive()
 
     def cancel(self) -> None:
         self._cancel_requested.set()

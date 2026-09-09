@@ -23,6 +23,7 @@ src/localdoc/
   domain/
   application/
   infrastructure/
+  ui/
   workers/
 ```
 
@@ -60,7 +61,7 @@ SQLite stores conversion history metadata. Logs use local rotating files and mus
 
 MarkItDown and Tesseract are wrapped behind adapters. This keeps UI and application services independent from third-party APIs and preserves a path for future replacement or extension.
 
-## Current Phase
+## Conversion Engine
 
 Phase 2 adds the conversion engine foundation:
 
@@ -69,4 +70,18 @@ Phase 2 adds the conversion engine foundation:
 - `ConversionService` remains available for direct service tests and non-process adapters.
 - The process runner creates MarkItDown and Tesseract adapters inside the child process so the UI layer does not depend on those third-party APIs.
 
-The final PySide6 UI, polished worker progress signals, packaging changes, and desktop-only documentation rewrite are intentionally left for later phases.
+## Desktop UI
+
+Phase 3 adds a PySide6 shell:
+
+- top bar with LocalDoc, engine status, OCR status, and settings access;
+- drag-and-drop drop zone plus file dialog;
+- queue table with type, name, size, and per-file status;
+- contextual panel with metadata, errors, output actions, and raw Markdown preview;
+- terracotta/ivory visual theme.
+
+## Integration
+
+Phase 4 connects the UI to `ConversionManager`, `SettingsService`, `ProcessConversionRunner`, SQLite history, MarkItDown, and Tesseract. The UI uses Qt signals to receive job updates from background work without calling conversion engines directly.
+
+Packaging changes, complete Desktop-only repository cleanup, installer work, and broader fixture validation are intentionally left for later phases.

@@ -11,8 +11,12 @@
 - Added local rotating logging setup.
 - Added a process-isolated conversion runner with per-file timeout handling.
 - Expanded `ConversionManager` with batch processing, pending cancellation, active cancellation request, retry, and clear-finished behavior.
+- Added a PySide6 desktop shell with header, OCR status, drag-and-drop zone, queue table, contextual panel, Markdown preview, and settings dialog.
+- Integrated the PySide6 shell with conversion manager, settings, SQLite history, MarkItDown process runner, and Tesseract status.
+- Updated the internal desktop development launcher to run `python -m localdoc`.
 - Added unit tests for domain, settings, filesystem, SQLite persistence, and conversion manager behavior.
 - Added integration tests for process-based conversion and timeout behavior.
+- Added UI smoke tests for LocalDoc main window, queue population, and preview rendering.
 - Updated runtime dependency direction for LocalDoc 0.2: PySide6, MarkItDown 0.1.7, Tesseract OCR, and Desktop-only extras.
 
 ## 0.1.2
