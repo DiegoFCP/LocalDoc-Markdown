@@ -71,16 +71,31 @@ class ConverterView(QWidget):
 
         eyebrow = QLabel("CONVIERTE · LEE · EDITA · AVANZA")
         eyebrow.setObjectName("Muted")
-        title = QLabel("Tu documento, listo para trabajar")
+        title = QLabel("Convierte tus documentos de forma simple y local")
         title.setObjectName("HeroTitle")
         title.setWordWrap(True)
+        subtitle = QLabel(
+            "PDF, Word, Excel, PowerPoint, imagenes y mas. Todo en tu equipo, con total privacidad."
+        )
+        subtitle.setObjectName("Muted")
+        subtitle.setWordWrap(True)
 
         self.drop_zone = DropZone()
         self.drop_zone.files_dropped.connect(self.add_paths)
         self.drop_zone.browse_requested.connect(self.browse_requested.emit)
 
-        privacy = QLabel("Procesamiento 100% local. Tus archivos permanecen en tu equipo.")
-        privacy.setObjectName("Muted")
+        privacy = QFrame()
+        privacy.setObjectName("PrivacyNote")
+        privacy_layout = QHBoxLayout(privacy)
+        privacy_layout.setContentsMargins(14, 10, 14, 10)
+        privacy_layout.setSpacing(8)
+        privacy_label = QLabel("Privacidad primero")
+        privacy_label.setObjectName("CardTitle")
+        privacy_text = QLabel("Procesamiento 100% local. Tus archivos permanecen en tu equipo.")
+        privacy_text.setObjectName("Muted")
+        privacy_text.setWordWrap(True)
+        privacy_layout.addWidget(privacy_label)
+        privacy_layout.addWidget(privacy_text, 1)
 
         header_row = QHBoxLayout()
         self.queue_title = QLabel("Archivos en cola (0)")
@@ -134,6 +149,7 @@ class ConverterView(QWidget):
 
         layout.addWidget(eyebrow)
         layout.addWidget(title)
+        layout.addWidget(subtitle)
         layout.addWidget(self.drop_zone)
         layout.addWidget(privacy)
         layout.addWidget(self.notification)

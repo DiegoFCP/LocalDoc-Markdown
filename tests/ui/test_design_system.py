@@ -10,8 +10,9 @@ from localdoc.ui.tokens import DARK_TOKENS, LIGHT_TOKENS, ThemeMode
 def test_light_theme_stylesheet_uses_accessible_primary_color() -> None:
     stylesheet = build_stylesheet(LIGHT_TOKENS)
 
-    assert "#B65437" in stylesheet
-    assert "#D96846" in stylesheet
+    assert "#286BF4" in stylesheet
+    assert "#FF654F" in stylesheet
+    assert "#EAF2FF" in stylesheet
     assert "QPushButton:focus" in stylesheet
     assert "QPushButton#PrimaryButton" in stylesheet
 
@@ -19,9 +20,9 @@ def test_light_theme_stylesheet_uses_accessible_primary_color() -> None:
 def test_dark_theme_stylesheet_uses_dark_palette() -> None:
     stylesheet = build_stylesheet(DARK_TOKENS)
 
-    assert "#171513" in stylesheet
-    assert "#F4EEE9" in stylesheet
-    assert "#E07856" in stylesheet
+    assert "#10131C" in stylesheet
+    assert "#EEF2FA" in stylesheet
+    assert "#8B6CFF" in stylesheet
 
 
 def test_theme_manager_resolves_explicit_modes() -> None:

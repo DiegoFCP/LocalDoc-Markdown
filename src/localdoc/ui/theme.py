@@ -57,7 +57,7 @@ QMainWindow, QWidget {{
 }}
 
 QFrame#TopBar {{
-    background: {colors.background};
+    background: {colors.surface};
     border-bottom: 1px solid {colors.border};
 }}
 
@@ -65,12 +65,14 @@ QLabel#Brand {{
     font-family: {typography.brand_family};
     font-size: {typography.display_size - 8}px;
     font-weight: 700;
+    color: {colors.text_primary};
 }}
 
 QLabel#HeroTitle {{
     font-family: {typography.brand_family};
     font-size: {typography.display_size - 4}px;
     font-weight: 700;
+    color: {colors.text_primary};
 }}
 
 QLabel#Muted {{
@@ -78,10 +80,10 @@ QLabel#Muted {{
 }}
 
 QLabel#Pill {{
-    background: {colors.accent_soft};
+    background: {colors.surface_accent};
     color: {colors.text_secondary};
     border: 1px solid {colors.border};
-    border-radius: {radius.radius_md}px;
+    border-radius: {radius.radius_lg}px;
     padding: {spacing.space_2}px {spacing.space_3}px;
 }}
 
@@ -89,13 +91,13 @@ QPushButton {{
     background: {colors.surface};
     color: {colors.text_primary};
     border: 1px solid {colors.border_strong};
-    border-radius: {radius.radius_sm}px;
+    border-radius: {radius.radius_md}px;
     padding: {spacing.space_2}px {spacing.space_4}px;
-    min-height: 20px;
+    min-height: 24px;
 }}
 
 QPushButton:hover {{
-    background: {colors.surface_accent};
+    background: {colors.accent_soft};
     border-color: {colors.accent};
 }}
 
@@ -106,6 +108,7 @@ QPushButton:pressed {{
 QPushButton:focus, QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QTextEdit:focus,
 QTableWidget:focus, QTableView:focus, QTabBar:focus {{
     border: 2px solid {colors.focus};
+    outline: none;
 }}
 
 QPushButton:disabled {{
@@ -115,15 +118,15 @@ QPushButton:disabled {{
 }}
 
 QPushButton#PrimaryButton {{
-    background: {colors.accent_primary};
-    border-color: {colors.accent_primary};
+    background: #FF654F;
+    border-color: #FF654F;
     color: #FFFFFF;
     font-weight: 700;
 }}
 
 QPushButton#PrimaryButton:hover {{
-    background: {colors.accent_hover};
-    border-color: {colors.accent_hover};
+    background: #E95440;
+    border-color: #E95440;
 }}
 
 QPushButton#SecondaryButton {{
@@ -143,9 +146,9 @@ QPushButton#GhostButton:hover {{
 }}
 
 QPushButton#GhostButton[active="true"] {{
-    background: {colors.surface_accent};
+    background: {colors.accent_soft};
     border-color: {colors.border};
-    color: {colors.text_primary};
+    color: {colors.accent_primary};
     font-weight: 700;
 }}
 
@@ -165,12 +168,13 @@ QPushButton#IconButton {{
 QFrame#DropZone {{
     background: {colors.surface_accent};
     border: 2px dashed {colors.accent};
-    border-radius: {radius.radius_md}px;
+    border-radius: {radius.radius_xl}px;
 }}
 
 QFrame#DropZone[dragActive="true"] {{
-    background: {colors.warning_soft};
+    background: {colors.accent_soft};
     border-color: {colors.accent_primary};
+    border-style: solid;
 }}
 
 QTableWidget {{
@@ -185,11 +189,20 @@ QTableWidget {{
 QTableView {{
     background: {colors.surface};
     border: 1px solid {colors.border};
-    border-radius: {radius.radius_md}px;
+    border-radius: {radius.radius_lg}px;
     gridline-color: {colors.border};
     selection-background-color: {colors.accent_soft};
     selection-color: {colors.text_primary};
     alternate-background-color: {colors.surface_alt};
+}}
+
+QTableView::item {{
+    padding: {spacing.space_2}px;
+    border-bottom: 1px solid {colors.border};
+}}
+
+QTableView::item:hover {{
+    background: {colors.surface_accent};
 }}
 
 QHeaderView::section {{
@@ -202,10 +215,10 @@ QHeaderView::section {{
 }}
 
 QTextEdit {{
-    background: {colors.surface};
-    color: {colors.text_primary};
-    border: 1px solid {colors.border};
-    border-radius: {radius.radius_md}px;
+    background: #1C2436;
+    color: #E7EDF7;
+    border: 1px solid #29344B;
+    border-radius: {radius.radius_lg}px;
     font-family: {typography.mono_family};
     font-size: {typography.small_size}px;
 }}
@@ -233,6 +246,12 @@ QCheckBox {{
 QFrame#SurfacePanel {{
     background: {colors.surface};
     border-left: 1px solid {colors.border};
+}}
+
+QFrame#PrivacyNote {{
+    background: {colors.success_soft};
+    border: 1px solid {colors.success};
+    border-radius: {radius.radius_lg}px;
 }}
 
 QLabel#CardTitle {{
@@ -279,11 +298,8 @@ QWidget#StatusBannerMuted {{
 }}
 
 QLabel#BrandSymbol {{
-    background: {colors.accent_primary};
-    color: #FFFFFF;
-    border-radius: {radius.radius_sm}px;
+    color: {colors.accent_primary};
     font-weight: 800;
-    padding: 3px 7px;
 }}
 """
 

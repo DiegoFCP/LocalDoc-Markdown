@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout
 
 from localdoc.ui.components import SecondaryButton
@@ -23,14 +23,25 @@ class DropZone(QFrame):
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(10)
 
+        self.icon = QLabel("DOC")
+        self.icon.setObjectName("BrandSymbol")
+        self.icon.setAccessibleName("Icono de documentos")
+        self.icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
         self.title = QLabel("Arrastra tus documentos aqui")
         self.title.setObjectName("HeroTitle")
         self.title.setWordWrap(True)
         self.title.setStyleSheet("font-size: 20px;")
+        self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        subtitle = QLabel("PDF · Word · Excel · PowerPoint · imagenes")
+        subtitle = QLabel("o selecciona archivos desde tu equipo")
         subtitle.setObjectName("Muted")
         subtitle.setWordWrap(True)
+        subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        formats = QLabel("PDF · Word · Excel · PowerPoint · Imagenes")
+        formats.setObjectName("Pill")
+        formats.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         button = SecondaryButton(
             "Seleccionar archivos",
@@ -39,8 +50,10 @@ class DropZone(QFrame):
         button.clicked.connect(self.browse_requested.emit)
 
         layout.addStretch(1)
+        layout.addWidget(self.icon)
         layout.addWidget(self.title)
         layout.addWidget(subtitle)
+        layout.addWidget(formats)
         layout.addWidget(button)
         layout.addStretch(1)
 

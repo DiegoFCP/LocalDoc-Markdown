@@ -97,11 +97,9 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(24, 12, 24, 12)
         layout.setSpacing(12)
 
-        symbol = QLabel("LD")
-        symbol.setObjectName("BrandSymbol")
-        symbol.setAccessibleName("Logo LocalDoc")
         brand = QLabel("LocalDoc")
         brand.setObjectName("Brand")
+        brand.setAccessibleName("LocalDoc")
 
         self.navigation = NavigationTabs()
         self.navigation.current_changed.connect(self._switch_view)
@@ -117,7 +115,6 @@ class MainWindow(QMainWindow):
         )
         self.settings_button.clicked.connect(self._open_settings)
 
-        layout.addWidget(symbol)
         layout.addWidget(brand)
         layout.addWidget(self.navigation)
         layout.addStretch(1)
