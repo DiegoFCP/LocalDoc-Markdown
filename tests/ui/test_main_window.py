@@ -10,6 +10,7 @@ from localdoc.infrastructure.database import Database
 from localdoc.infrastructure.paths import AppPaths
 from localdoc.infrastructure.repositories import JobRepository
 from localdoc.infrastructure.tesseract_adapter import TesseractAdapter
+from localdoc.ui.dialogs.settings_dialog import SettingsDialog
 from localdoc.ui.main_window import MainWindow
 from localdoc.workers.conversion_worker import ConversionResult
 
@@ -42,11 +43,13 @@ def test_main_window_initializes(tmp_path: Path, qtbot) -> None:
     window = build_window(tmp_path, qtbot)
 
     assert window.windowTitle() == "LocalDoc"
-    assert window.table.rowCount() == 0
+    assert window.table.model().rowCount() == 0
     assert "OCR no disponible" in window.ocr_status.text()
     assert window.convert_button.objectName() == "PrimaryButton"
     assert window.cancel_button.objectName() == "SecondaryButton"
     assert window.convert_button.accessibleName() == "Convertir"
+    assert window.navigation.convert_button.isChecked()
+    assert window.navigation.history_button.text() == "Historial"
 
 
 def test_main_window_adds_file_to_queue(tmp_path: Path, qtbot) -> None:
@@ -56,7 +59,7 @@ def test_main_window_adds_file_to_queue(tmp_path: Path, qtbot) -> None:
 
     window._add_paths([source])
 
-    assert window.table.rowCount() == 1
+    assert window.table.model().rowCount() == 1
     assert window.manager.jobs[0].name == "nota.txt"
 
 
@@ -67,6 +70,39 @@ def test_main_window_runs_conversion_and_shows_preview(tmp_path: Path, qtbot) ->
     window._add_paths([source])
 
     window.manager.run_next()
-    window._refresh_detail(window.manager.jobs[0])
+    window.converter_view.refresh_detail(window.manager.jobs[0])
 
     assert "# nota.txt" in window.preview.toPlainText()
+
+
+def test_main_window_navigates_between_views(tmp_path: Path, qtbot) -> None:
+    window = build_window(tmp_path, qtbot)
+
+    window._switch_view(1)
+    assert window.stack.currentIndex() == 1
+    assert window.navigation.history_button.isChecked()
+
+    window._switch_view(0)
+    assert window.stack.currentIndex() == 0
+    assert window.navigation.convert_button.isChecked()
+
+
+def test_settings_dialog_persists_theme_choice(tmp_path: Path, qtbot) -> None:
+    settings = AppSettings(output_dir=tmp_path / "out", theme_mode="dark")
+    dialog = SettingsDialog(settings, TesseractAdapter(tmp_path / "missing.exe"))
+    qtbot.addWidget(dialog)
+
+    assert dialog.theme_mode.currentData() == "dark"
+    assert dialog.to_settings().theme_mode == "dark"
+
+
+def test_history_view_lists_completed_jobs(tmp_path: Path, qtbot) -> None:
+    window = build_window(tmp_path, qtbot)
+    source = tmp_path / "nota.txt"
+    source.write_text("hola", encoding="utf-8")
+    window._add_paths([source])
+    window.manager.run_next()
+
+    window.history_view.refresh()
+
+    assert window.history_view.table.model().rowCount() == 1

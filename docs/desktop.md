@@ -29,10 +29,14 @@ dist\LocalDoc.exe.sha256
 ## Main Functions
 
 - Add documents through file picker or drag-and-drop.
+- Navigate between `Convertir` and `Historial`.
 - Process a queue without blocking the interface.
 - Convert documents to Markdown with MarkItDown.
 - Convert images to Markdown with local Tesseract OCR.
 - Preview generated Markdown.
+- Review conversion details in a dedicated tab.
+- Search and filter local history.
+- Switch between system, light, and dark themes.
 - Copy Markdown to clipboard.
 - Open the generated file or containing folder.
 - Persist settings and conversion history locally.
@@ -49,4 +53,15 @@ Recommended language setting:
 
 ```text
 spa+eng
+```
+
+## Keyboard
+
+```text
+Ctrl+O        Select files
+Ctrl+Enter    Convert pending files
+Ctrl+,        Open settings
+Ctrl+1        Convert view
+Ctrl+2        History view
+Ctrl+H        History view
 ```

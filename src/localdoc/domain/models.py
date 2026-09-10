@@ -151,6 +151,7 @@ class AppSettings:
     ocr_enabled: bool = True
     ocr_language: str = "spa+eng"
     tesseract_path: Path | None = None
+    theme_mode: str = "system"
     file_limits: FileLimits = field(default_factory=FileLimits)
     conversion_timeout_seconds: int = 300
 

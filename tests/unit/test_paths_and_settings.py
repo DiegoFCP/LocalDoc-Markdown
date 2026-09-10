@@ -27,6 +27,7 @@ def test_settings_round_trip(tmp_path: Path) -> None:
         ocr_enabled=False,
         ocr_language="eng",
         tesseract_path=tmp_path / "tesseract.exe",
+        theme_mode="dark",
         file_limits=FileLimits(max_files=7, max_file_size_mb=8),
         conversion_timeout_seconds=9,
     )
@@ -38,6 +39,7 @@ def test_settings_round_trip(tmp_path: Path) -> None:
     assert loaded.ocr_enabled is False
     assert loaded.ocr_language == "eng"
     assert loaded.tesseract_path == settings.tesseract_path
+    assert loaded.theme_mode == "dark"
     assert loaded.file_limits.max_files == 7
     assert loaded.file_limits.max_file_size_mb == 8
     assert loaded.conversion_timeout_seconds == 9

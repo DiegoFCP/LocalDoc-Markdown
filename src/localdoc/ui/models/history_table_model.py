@@ -2,48 +2,12 @@ from __future__ import annotations
 
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt
 
-from localdoc.domain.enums import JobStatus
 from localdoc.domain.models import ConversionJob
-
-STATUS_LABELS = {
-    JobStatus.QUEUED: "En espera",
-    JobStatus.PROCESSING: "Procesando",
-    JobStatus.COMPLETED: "Completado",
-    JobStatus.FAILED: "Error",
-    JobStatus.CANCELLED: "Cancelado",
-}
+from localdoc.ui.models.queue_table_model import STATUS_LABELS, file_type_label, format_size
 
 
-def format_size(size_bytes: int) -> str:
-    if size_bytes < 1024:
-        return f"{size_bytes} B"
-    if size_bytes < 1024 * 1024:
-        return f"{size_bytes / 1024:.1f} KB"
-    return f"{size_bytes / 1024 / 1024:.1f} MB"
-
-
-def job_row(job: ConversionJob) -> list[str]:
-    return [
-        file_label(job),
-        format_size(job.size_bytes),
-        STATUS_LABELS[job.status],
-        "",
-    ]
-
-
-def file_type_label(job: ConversionJob) -> str:
-    extension = job.extension.lstrip(".").upper()
-    if job.uses_ocr:
-        return "IMG"
-    return extension or "FILE"
-
-
-def file_label(job: ConversionJob) -> str:
-    return f"[{file_type_label(job)}] {job.name}"
-
-
-class QueueTableModel(QAbstractTableModel):
-    headers = ["Archivo", "Tamano", "Estado", ""]
+class HistoryTableModel(QAbstractTableModel):
+    headers = ["Archivo", "Tipo", "Estado", "Fecha", "Tamano"]
 
     def __init__(self, jobs: list[ConversionJob] | None = None) -> None:
         super().__init__()
@@ -61,8 +25,15 @@ class QueueTableModel(QAbstractTableModel):
         if not index.isValid():
             return None
         job = self.jobs[index.row()]
+        values = [
+            job.name,
+            file_type_label(job),
+            STATUS_LABELS[job.status],
+            job.created_at.strftime("%Y-%m-%d %H:%M"),
+            format_size(job.size_bytes),
+        ]
         if role == Qt.ItemDataRole.DisplayRole:
-            return job_row(job)[index.column()]
+            return values[index.column()]
         if role == Qt.ItemDataRole.UserRole:
             return job.id
         return None

@@ -22,6 +22,7 @@
 - Added hardening coverage for duplicate queue items, deleted queued files, queue limits, long Unicode names, output collisions, timeout handling, and missing OCR engine errors.
 - Added a committed PyInstaller spec for the Windows `onedir` build and updated release automation to publish `LocalDoc-Windows.zip` plus SHA256 checksum.
 - Added UX-1 design system foundations with reusable tokens, light/dark theme generation, focus states, and button components.
+- Added UX-2 through UX-7 desktop redesign work: header navigation, converter view extraction, contextual preview/details panel, local history view, sectioned settings dialog, theme preference, and LocalDoc branding assets.
 
 ## 0.1.2
 

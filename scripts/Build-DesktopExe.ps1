@@ -55,6 +55,17 @@ if (-not (Test-Path -LiteralPath $ExePath)) {
     throw "No se genero $ExePath"
 }
 
+$PySideRuntimeSource = & $PythonExe -c "from pathlib import Path; import PySide6; print(Path(PySide6.__file__).parent)"
+$PySideRuntimeTarget = Join-Path $RepoRoot "dist\LocalDoc\_internal\PySide6"
+if ((Test-Path -LiteralPath $PySideRuntimeSource) -and (Test-Path -LiteralPath $PySideRuntimeTarget)) {
+    foreach ($RuntimeDll in @("MSVCP140.dll", "MSVCP140_1.dll", "MSVCP140_2.dll", "VCRUNTIME140.dll", "VCRUNTIME140_1.dll")) {
+        $SourceDll = Join-Path $PySideRuntimeSource $RuntimeDll
+        if (Test-Path -LiteralPath $SourceDll) {
+            Copy-Item -LiteralPath $SourceDll -Destination $PySideRuntimeTarget -Force
+        }
+    }
+}
+
 $ChecksumPath = Join-Path $RepoRoot "dist\LocalDoc.exe.sha256"
 Get-FileHash -LiteralPath $ExePath -Algorithm SHA256 |
     ForEach-Object { "$($_.Hash)  LocalDoc.exe" } |

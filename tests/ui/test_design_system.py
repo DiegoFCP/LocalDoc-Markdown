@@ -27,6 +27,7 @@ def test_dark_theme_stylesheet_uses_dark_palette() -> None:
 def test_theme_manager_resolves_explicit_modes() -> None:
     assert ThemeManager(ThemeMode.LIGHT).resolve_mode() == ThemeMode.LIGHT
     assert ThemeManager(ThemeMode.DARK).resolve_mode() == ThemeMode.DARK
+    assert ThemeManager.from_value("missing").mode == ThemeMode.SYSTEM
 
 
 def test_theme_manager_applies_stylesheet(qtbot) -> None:

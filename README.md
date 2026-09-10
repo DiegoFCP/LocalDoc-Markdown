@@ -11,7 +11,10 @@ No document content is sent to cloud services by LocalDoc.
 - Desktop-only Windows app built with PySide6.
 - Batch queue with per-file states.
 - Drag-and-drop or file picker input.
+- Convert / History navigation.
 - Markdown preview for completed conversions.
+- Searchable local history.
+- Light, dark, and system themes.
 - Local SQLite conversion history.
 - Optional Tesseract OCR for images.
 - Process-isolated conversions with per-file timeout.
@@ -85,6 +88,8 @@ src/localdoc/          Desktop application source
 tests/                 Unit, integration, and UI smoke tests
 scripts/               Development, validation, OCR install, and build helpers
 packaging/             PyInstaller spec
+src/localdoc/ui/resources/branding/
+                       LocalDoc SVG and ICO assets
 docs/                  User and maintainer documentation
 examples/              Small sample input and output
 .github/workflows/     CI and release automation

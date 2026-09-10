@@ -23,6 +23,7 @@ class SettingsService:
             ocr_enabled=bool(data.get("ocr_enabled", True)),
             ocr_language=str(data.get("ocr_language", "spa+eng")),
             tesseract_path=Path(data["tesseract_path"]) if data.get("tesseract_path") else None,
+            theme_mode=str(data.get("theme_mode", "system")),
             file_limits=FileLimits(
                 max_files=int(limits.get("max_files", 100)),
                 max_file_size_mb=int(limits.get("max_file_size_mb", 100)),
@@ -42,4 +43,3 @@ class SettingsService:
 
     def default(self) -> AppSettings:
         return AppSettings(output_dir=self.paths.default_output_dir)
-

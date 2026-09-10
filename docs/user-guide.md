@@ -41,3 +41,15 @@ The first desktop release applies conservative limits:
 - Per-file timeout from settings.
 
 Files over those limits are rejected before conversion.
+
+## History
+
+Open `Historial` to review previous conversions stored locally. You can search by file name and filter by state or type.
+
+## Appearance
+
+Open `Configuracion` and choose one of:
+
+- Sistema
+- Claro
+- Oscuro

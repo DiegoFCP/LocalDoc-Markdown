@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="180" viewBox="0 0 720 180" role="img" aria-label="LocalDoc logo">
+  <rect x="24" y="24" width="132" height="132" rx="28" fill="#B65437"/>
+  <path d="M64 48h45l23 23v65H64z" fill="#FFF8F3"/>
+  <path d="M109 48v23h23z" fill="#F4D2C4"/>
+  <path d="M76 86h39M76 104h31M76 122h22" stroke="#B65437" stroke-width="8" stroke-linecap="round"/>
+  <path d="M116 105l13 13-13 13" fill="none" stroke="#B65437" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="184" y="112" fill="#24211D" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="700">LocalDoc</text>
+</svg>

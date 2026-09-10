@@ -19,12 +19,12 @@ def main() -> int:
     paths.ensure()
     configure_logging(paths)
 
-    app = QApplication(sys.argv)
-    app.setApplicationName("LocalDoc")
-    ThemeManager().apply(app)
-
     settings_service = build_settings_service(paths)
     manager = build_conversion_manager(paths)
+    app = QApplication(sys.argv)
+    app.setApplicationName("LocalDoc")
+    ThemeManager.from_value(manager.settings.theme_mode).apply(app)
+
     window = MainWindow(
         manager=manager,
         settings_service=settings_service,
