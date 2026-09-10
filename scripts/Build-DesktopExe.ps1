@@ -66,6 +66,14 @@ if ((Test-Path -LiteralPath $PySideRuntimeSource) -and (Test-Path -LiteralPath $
     }
 }
 
+$InternalPath = Join-Path $RepoRoot "dist\LocalDoc\_internal"
+foreach ($BundledIcuDll in @("icuuc.dll", "icudt78.dll")) {
+    $BundledIcuPath = Join-Path $InternalPath $BundledIcuDll
+    if (Test-Path -LiteralPath $BundledIcuPath) {
+        Remove-Item -LiteralPath $BundledIcuPath -Force
+    }
+}
+
 $ChecksumPath = Join-Path $RepoRoot "dist\LocalDoc.exe.sha256"
 Get-FileHash -LiteralPath $ExePath -Algorithm SHA256 |
     ForEach-Object { "$($_.Hash)  LocalDoc.exe" } |
