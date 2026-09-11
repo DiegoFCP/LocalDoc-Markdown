@@ -6,6 +6,7 @@ __pycache__/
 *.pyo
 *.egg-info/
 .pytest_cache/
+.pytest-tmp/
 .mypy_cache/
 .ruff_cache/
 
@@ -13,6 +14,7 @@ work/
 dist/
 build/
 *.spec
+!packaging/*.spec
 
 *.log
 *.tmp
@@ -23,3 +25,8 @@ Thumbs.db
 
 # Local packaged binaries are release artifacts, not source.
 *.exe
+
+# Local planning and audit notes used during the Codex rebuild.
+Auditoria_y_Plan_de_Trabajo_LocalDoc_Markdown.md
+LOCALDOC_DESKTOP_REBUILD_MASTER_CONTEXT.md
+UX_UI_REDESIGN_PLAN.md

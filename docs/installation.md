@@ -1,12 +1,20 @@
 # Installation
 
-## Option 1: Download the Desktop App
+## Option 1: Download The Desktop App
 
-Download `MarkItDownDesktop.exe` from the latest GitHub Release.
+Download `LocalDoc-Windows.zip` from the latest GitHub Release.
 
-The EXE includes the Python app and Python dependencies. For image OCR, install Tesseract OCR separately.
+1. Extract the ZIP.
+2. Run `LocalDoc\LocalDoc.exe`.
+3. Install Tesseract OCR separately if you need image OCR.
 
-## Option 2: Run from Source
+## Option 2: Run From Source
+
+Requirements:
+
+- Windows 10 or newer.
+- Python 3.12 for release parity.
+- Git.
 
 ```powershell
 git clone https://github.com/DiegoFCP/LocalDoc-Markdown.git
@@ -29,13 +37,6 @@ Expected Windows path:
 
 ```text
 C:\Program Files\Tesseract-OCR\tesseract.exe
-```
-
-Recommended languages:
-
-```text
-spa
-eng
 ```
 
 Validate:

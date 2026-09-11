@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="LocalDoc symbol dark">
+  <rect width="256" height="256" rx="52" fill="#E07856"/>
+  <path d="M78 48h76l34 34v126H78z" fill="#171513"/>
+  <path d="M154 48v34h34z" fill="#33241E"/>
+  <path d="M96 104h58M96 128h46M96 152h34" stroke="#E07856" stroke-width="12" stroke-linecap="round"/>
+  <path d="M159 133l20 19-20 19" fill="none" stroke="#E07856" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

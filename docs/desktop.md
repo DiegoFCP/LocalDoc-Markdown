@@ -1,47 +1,67 @@
-# App de escritorio
+# Desktop App
 
-## Ejecutar desde fuente
+## Run From Source
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\Run-Desktop.ps1
 ```
 
-## Generar EXE
+Equivalent direct command:
+
+```powershell
+.\.venv\Scripts\python.exe -m localdoc
+```
+
+## Build Windows Package
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\Build-DesktopExe.ps1
 ```
 
-El ejecutable queda en:
+The build creates:
 
 ```text
-dist\MarkItDownDesktop.exe
+dist\LocalDoc\LocalDoc.exe
+dist\LocalDoc-Windows.zip
+dist\LocalDoc.exe.sha256
 ```
 
-## Funciones
+## Main Functions
 
-- Agregar documentos individuales.
-- Agregar imagenes para OCR.
-- Agregar carpetas completas.
-- Elegir carpeta de salida.
-- Convertir documentos a Markdown con MarkItDown.
-- Convertir imagenes a Markdown con Tesseract OCR.
-- Abrir carpeta de resultados.
-- Abrir historial CSV.
+- Add documents through file picker or drag-and-drop.
+- Navigate between `Convertir` and `Historial`.
+- Process a queue without blocking the interface.
+- Convert documents to Markdown with MarkItDown.
+- Convert images to Markdown with local Tesseract OCR.
+- Preview generated Markdown.
+- Review conversion details in a dedicated tab.
+- Search and filter local history.
+- Switch between system, light, and dark themes.
+- Copy Markdown to clipboard.
+- Open the generated file or containing folder.
+- Persist settings and conversion history locally.
 
 ## OCR
 
-La app busca automaticamente:
+LocalDoc checks the configured Tesseract executable before reporting OCR as available. The common Windows path is:
 
 ```text
 C:\Program Files\Tesseract-OCR\tesseract.exe
-C:\Program Files (x86)\Tesseract-OCR\tesseract.exe
 ```
 
-Idioma recomendado:
+Recommended language setting:
 
 ```text
 spa+eng
 ```
 
-Si Tesseract no aparece, usa `Elegir EXE` y selecciona `tesseract.exe`. Para seleccionar imagenes usa `Agregar imagenes`.
+## Keyboard
+
+```text
+Ctrl+O        Select files
+Ctrl+Enter    Convert pending files
+Ctrl+,        Open settings
+Ctrl+1        Convert view
+Ctrl+2        History view
+Ctrl+H        History view
+```

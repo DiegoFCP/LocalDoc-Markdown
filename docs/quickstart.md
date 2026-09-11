@@ -1,31 +1,31 @@
 # Quickstart
 
-## Instalar dependencias
+## Install Dependencies
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\Setup-Environment.ps1
 ```
 
-## Convertir un archivo
+## Run The Desktop App
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Convert-ToMarkdown.ps1 "C:\ruta\archivo.pdf"
+powershell -ExecutionPolicy Bypass -File .\scripts\Run-Desktop.ps1
 ```
 
-Si no pasas ruta de salida, se crea un `.md` junto al archivo original.
+## Convert A File
 
-## Verificar MarkItDown
+1. Drop a file into LocalDoc, or use `Seleccionar archivos`.
+2. Start the conversion.
+3. Select the completed row to preview or open the Markdown output.
 
-```powershell
-.\.venv\Scripts\markitdown.exe --version
-```
-
-## Verificar todo el entorno
+## Verify The Environment
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\Check-Environment.ps1
 ```
 
-## Nota sobre YouTube
+## Build The Windows Package
 
-Este proyecto instala MarkItDown sin el extra de YouTube para mantener compatibilidad con Python 3.14 en esta estacion.
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Build-DesktopExe.ps1
+```

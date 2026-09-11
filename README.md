@@ -1,54 +1,58 @@
 # LocalDoc Markdown
-Diego Cortés C. <3
 
 [![CI](https://github.com/DiegoFCP/LocalDoc-Markdown/actions/workflows/ci.yml/badge.svg)](https://github.com/DiegoFCP/LocalDoc-Markdown/actions/workflows/ci.yml)
 
-LocalDoc Markdown is a Windows-friendly workstation app for converting local documents to Markdown. It wraps [Microsoft MarkItDown](https://github.com/microsoft/markitdown), adds a desktop UI, a Streamlit UI, a folder pipeline, and optional local OCR for images through Tesseract.
+LocalDoc Markdown is a private Windows desktop app for converting local documents to Markdown. It wraps [Microsoft MarkItDown](https://github.com/microsoft/markitdown), adds a PySide6 interface, keeps a local SQLite history, and supports optional image OCR through local Tesseract.
+
+No document content is sent to cloud services by LocalDoc.
 
 ## Features
 
-- Desktop app for non-technical users.
-- Streamlit app for browser-based local use.
-- PowerShell CLI wrapper for one-off conversions.
-- Folder pipeline with SHA256 manifest to skip unchanged files.
-- OCR for images with Tesseract (`spa+eng` by default).
-- Shared Python core for hashing, filename safety, limits, manifests, and CSV protection.
-- PyInstaller build script for a standalone Windows EXE.
-- GitHub Actions CI, CodeQL, Dependabot, and release workflow with checksum.
+- Desktop-only Windows app built with PySide6.
+- Batch queue with per-file states.
+- Drag-and-drop or file picker input.
+- Convert / History navigation.
+- Markdown preview for completed conversions.
+- Warm LocalDoc desktop identity with packaged app icon and conversion-state illustrations.
+- Searchable local history.
+- Light, dark, and system themes.
+- Local SQLite conversion history.
+- Optional Tesseract OCR for images.
+- Process-isolated conversions with per-file timeout.
+- PyInstaller Windows release workflow with SHA256 checksum.
 
 ## Supported Inputs
 
-MarkItDown handles common document formats such as:
+The initial 0.2.0 surface supports the formats covered by current tests and adapters:
 
+- TXT
+- HTML
 - PDF
-- Word (`.docx`, `.doc`)
-- PowerPoint (`.pptx`)
-- Excel (`.xlsx`, `.xls`)
-- HTML, TXT, CSV, JSON, XML
-- ZIP, EPUB, Outlook messages
-- Audio files supported by MarkItDown dependencies
+- Word `.docx`
+- PowerPoint `.pptx`
+- Excel `.xlsx`
+- CSV, JSON, XML
+- Images for OCR: PNG, JPG/JPEG, BMP, TIFF, WebP
 
-The desktop app also supports OCR for:
+MarkItDown may support more formats internally, but LocalDoc only documents formats validated for this desktop release.
 
-- JPG, JPEG, JFIF
-- PNG
-- BMP
-- TIF, TIFF
-- WebP
+## Download
 
-## Quick Start
+Download `LocalDoc-Windows.zip` from the [latest GitHub Release](https://github.com/DiegoFCP/LocalDoc-Markdown/releases/latest), extract it, and run:
 
-### Option 1: Download the Desktop App
+```text
+LocalDoc\LocalDoc.exe
+```
 
-Download `MarkItDownDesktop.exe` from the [latest GitHub Release](https://github.com/DiegoFCP/LocalDoc-Markdown/releases/latest).
+The release is a portable Windows package, not an installer. Because the EXE is not code-signed yet, Windows SmartScreen may ask for confirmation the first time it runs.
 
-For image OCR, install Tesseract OCR separately. The app will auto-detect:
+For image OCR, install Tesseract OCR separately. The default Windows path is:
 
 ```text
 C:\Program Files\Tesseract-OCR\tesseract.exe
 ```
 
-### Option 2: Run from Source
+## Run From Source
 
 ```powershell
 git clone https://github.com/DiegoFCP/LocalDoc-Markdown.git
@@ -57,56 +61,43 @@ powershell -ExecutionPolicy Bypass -File .\scripts\Setup-Environment.ps1
 powershell -ExecutionPolicy Bypass -File .\scripts\Run-Desktop.ps1
 ```
 
-Validate the environment:
+## Quality Checks
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Check-Environment.ps1
-```
-
-Run quality checks:
-
-```powershell
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 .\.venv\Scripts\python.exe -m ruff check .
 .\.venv\Scripts\python.exe -m pytest
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m compileall -q src tests
 ```
 
-## Streamlit UI
+## Build
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Run-Streamlit.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\Build-DesktopExe.ps1
 ```
 
-Open:
+Outputs:
 
 ```text
-http://127.0.0.1:8501
+dist\LocalDoc\LocalDoc.exe
+dist\LocalDoc-Windows.zip
+dist\LocalDoc.exe.sha256
 ```
 
-## CLI Conversion
+GitHub Actions builds the same release package when a `v*` tag is pushed.
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Convert-ToMarkdown.ps1 "C:\path\document.pdf"
-```
-
-Optionally pass an output path:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Convert-ToMarkdown.ps1 "C:\path\document.pdf" "C:\path\document.md"
-```
-
-## Folder Pipeline
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Process-MarkitdownInbox.ps1
-```
-
-Default folders:
+## Project Layout
 
 ```text
-work\pipeline\input
-work\pipeline\output
-work\pipeline\logs
+src/localdoc/          Desktop application source
+tests/                 Unit, integration, and UI smoke tests
+scripts/               Development, validation, OCR install, and build helpers
+packaging/             PyInstaller spec
+src/localdoc/ui/resources/branding/
+                       LocalDoc SVG and ICO assets
+docs/                  User and maintainer documentation
+examples/              Small sample input and output
+.github/workflows/     CI and release automation
 ```
 
 ## Documentation
@@ -114,50 +105,11 @@ work\pipeline\logs
 - [Installation](docs/installation.md)
 - [User guide](docs/user-guide.md)
 - [Desktop app](docs/desktop.md)
-- [Streamlit app](docs/streamlit.md)
-- [Folder pipeline](docs/pipeline.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Release process](docs/release.md)
-
-## Build the Windows EXE
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Build-DesktopExe.ps1
-```
-
-Output:
-
-```text
-dist\MarkItDownDesktop.exe
-```
-
-GitHub Releases also attach:
-
-```text
-MarkItDownDesktop.exe.sha256
-```
-
-## Project Layout
-
-```text
-localdoc_markdown/  Shared conversion support utilities
-apps/desktop/       Tkinter desktop app
-apps/streamlit/     Streamlit app
-scripts/            Setup, run, conversion, pipeline, and build scripts
-docs/               User and maintainer documentation
-examples/           Sample input and output
-.github/workflows/  CI and release automation
-```
-
-## Notes
-
-- The repository does not commit `.venv`, `work`, `dist`, or generated EXEs.
-- Tesseract OCR is required only for image OCR.
-- CSV manifests escape values that could be interpreted as formulas by Excel.
-- Desktop and Streamlit enforce initial processing limits of 100 files and 100 MB per file.
-- On Windows, use `scripts\Install-Tesseract-Windows.ps1` as a helper, or install Tesseract manually.
-- `ffmpeg` may be required by MarkItDown for some audio/video workflows.
-- The YouTube extra is intentionally not installed because it can be incompatible with Python 3.14.
+- [Architecture](docs/architecture.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
 
 ## License
 

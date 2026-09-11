@@ -18,9 +18,9 @@ if ($LASTEXITCODE -ne 0) {
     throw "pip install --upgrade pip finalizo con codigo $LASTEXITCODE"
 }
 
-& $VenvPython -m pip install -r requirements.txt
+& $VenvPython -m pip install -e ".[dev,build]"
 if ($LASTEXITCODE -ne 0) {
-    throw "pip install -r requirements.txt finalizo con codigo $LASTEXITCODE"
+    throw "pip install -e .[dev,build] finalizo con codigo $LASTEXITCODE"
 }
 
 Write-Host "Entorno listo en $RepoRoot\.venv"

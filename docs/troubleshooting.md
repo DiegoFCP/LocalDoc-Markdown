@@ -9,7 +9,7 @@ Check:
 & "C:\Program Files\Tesseract-OCR\tesseract.exe" --list-langs
 ```
 
-If it works, open the desktop app and select `Elegir EXE`.
+If it works, open the desktop app settings and select `tesseract.exe`.
 
 ## Spanish OCR Does Not Work
 
@@ -47,12 +47,12 @@ The EXE includes the Python OCR wrapper but does not bundle the native Tesseract
 
 ## A File Is Rejected Before Conversion
 
-The apps protect the workstation with conservative default limits: 100 files per batch and 100 MB per file. Split the batch or reduce very large source files before converting.
+The app protects the workstation with conservative default limits: 100 files per queue and 100 MB per file. Split the batch or reduce very large source files before converting.
 
-## Verify A Downloaded EXE
+## Verify A Downloaded Package
 
-Download `MarkItDownDesktop.exe.sha256` from the same release and compare it with:
+Download `LocalDoc.exe.sha256` from the same release and compare it with:
 
 ```powershell
-Get-FileHash -LiteralPath .\MarkItDownDesktop.exe -Algorithm SHA256
+Get-FileHash -LiteralPath .\LocalDoc\LocalDoc.exe -Algorithm SHA256
 ```

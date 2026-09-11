@@ -24,26 +24,32 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          python -m pip install -e ".[dev,build]"
+
+      - name: Lint
+        run: python -m ruff check .
+
+      - name: Compile source and tests
+        run: python -m compileall -q src tests packaging
+
+      - name: Check dependencies
+        run: python -m pip check
+
+      - name: Test
+        run: python -m pytest
 
       - name: Build desktop EXE
         shell: powershell
         run: .\scripts\Build-DesktopExe.ps1
 
-      - name: Generate checksum
-        shell: powershell
-        run: |
-          Get-FileHash -LiteralPath dist\MarkItDownDesktop.exe -Algorithm SHA256 |
-            ForEach-Object { "$($_.Hash)  MarkItDownDesktop.exe" } |
-            Set-Content -LiteralPath dist\MarkItDownDesktop.exe.sha256 -Encoding ascii
-
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MarkItDownDesktop-Windows
+          name: LocalDoc-Windows
           path: |
-            dist\MarkItDownDesktop.exe
-            dist\MarkItDownDesktop.exe.sha256
+            dist\LocalDoc\**
+            dist\LocalDoc-Windows.zip
+            dist\LocalDoc.exe.sha256
 
       - name: Publish GitHub Release
         env:
@@ -51,7 +57,7 @@ jobs:
         shell: powershell
         run: |
           gh release create $env:GITHUB_REF_NAME `
-            dist\MarkItDownDesktop.exe `
-            dist\MarkItDownDesktop.exe.sha256 `
+            dist\LocalDoc-Windows.zip `
+            dist\LocalDoc.exe.sha256 `
             --title "LocalDoc Markdown $env:GITHUB_REF_NAME" `
-            --notes "Windows desktop build for LocalDoc Markdown. Tesseract OCR must be installed separately for image OCR. SHA256 checksum is attached."
+            --notes "Windows desktop build for LocalDoc Markdown. Extract the ZIP and run LocalDoc.exe. Tesseract OCR must be installed separately for image OCR. SHA256 checksum is attached."
