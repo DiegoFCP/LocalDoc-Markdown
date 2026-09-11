@@ -25,6 +25,7 @@
 - Added UX-2 through UX-7 desktop redesign work: header navigation, converter view extraction, contextual preview/details panel, local history view, sectioned settings dialog, theme preference, and LocalDoc branding assets.
 - Refreshed the desktop visual language with a brighter local-product palette and functional icons.
 - Added the LocalDoc application icon plus loading and completed-conversion illustrations as packaged desktop resources.
+- Refined the desktop UI toward the document conversion studio direction: compact header, smaller engine indicators, exact warm palette, simpler drop area, clearer queue columns, and a non-duplicated empty detail state.
 - Hardened the PyInstaller runtime for PySide6 by avoiding incompatible bundled ICU DLLs.
 - Updated the release workflow so public tags run linting, dependency checks, tests, bytecode compilation, Windows packaging, checksum generation, and release upload.
 

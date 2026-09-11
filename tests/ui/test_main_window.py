@@ -54,6 +54,12 @@ def test_main_window_initializes(tmp_path: Path, qtbot) -> None:
     assert window.navigation.convert_button.isChecked()
     assert window.navigation.history_button.text() == "Historial"
     assert any(action.shortcut() == QKeySequence("Esc") for action in window.actions())
+    assert window.minimumWidth() == 1060
+    assert window.minimumHeight() == 720
+    assert window.findChild(type(window.engine_status), "BrandSubtitle") is not None
+    assert not window.converter_view.queue_menu_button.isVisible()
+    assert not window.converter_view.action_widget.isVisible()
+    assert not window.converter_view.tabs.isVisible()
 
 
 def test_main_window_adds_file_to_queue(tmp_path: Path, qtbot) -> None:
@@ -65,6 +71,9 @@ def test_main_window_adds_file_to_queue(tmp_path: Path, qtbot) -> None:
 
     assert window.table.model().rowCount() == 1
     assert window.manager.jobs[0].name == "nota.txt"
+    assert window.table.model().columnCount() == 5
+    assert window.table.model().headerData(1, Qt.Orientation.Horizontal) == "Tipo"
+    assert window.table.model().headerData(4, Qt.Orientation.Horizontal) == "Acciones"
 
 
 def test_queue_model_exposes_visual_icons(tmp_path: Path, qtbot) -> None:
@@ -74,7 +83,7 @@ def test_queue_model_exposes_visual_icons(tmp_path: Path, qtbot) -> None:
     window._add_paths([source])
 
     file_icon = window.table.model().index(0, 0).data(Qt.ItemDataRole.DecorationRole)
-    status_icon = window.table.model().index(0, 2).data(Qt.ItemDataRole.DecorationRole)
+    status_icon = window.table.model().index(0, 3).data(Qt.ItemDataRole.DecorationRole)
 
     assert file_icon is not None
     assert status_icon is not None

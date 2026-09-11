@@ -7,7 +7,7 @@ from localdoc.ui.models.queue_table_model import STATUS_LABELS, file_type_label,
 
 
 class HistoryTableModel(QAbstractTableModel):
-    headers = ["Archivo", "Tipo", "Estado", "Fecha", "Tamano"]
+    headers = ["Archivo", "Tipo", "Estado", "Fecha", "Tamaño"]
 
     def __init__(self, jobs: list[ConversionJob] | None = None) -> None:
         super().__init__()

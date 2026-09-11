@@ -72,6 +72,11 @@ QLabel#Brand {{
     color: {colors.text_primary};
 }}
 
+QLabel#BrandSubtitle {{
+    color: {colors.text_muted};
+    font-size: {typography.small_size}px;
+}}
+
 QLabel#HeroTitle {{
     font-family: {typography.brand_family};
     font-size: {typography.display_size - 4}px;
@@ -84,11 +89,10 @@ QLabel#Muted {{
 }}
 
 QLabel#Pill {{
-    background: {colors.surface_accent};
+    background: transparent;
     color: {colors.text_secondary};
-    border: 1px solid {colors.border};
-    border-radius: {radius.radius_lg}px;
-    padding: {spacing.space_2}px {spacing.space_3}px;
+    border: 0;
+    padding: 0 {spacing.space_2}px;
 }}
 
 QPushButton {{
@@ -171,8 +175,8 @@ QPushButton#IconButton {{
 
 QFrame#DropZone {{
     background: {colors.surface_accent};
-    border: 2px dashed {colors.accent};
-    border-radius: {radius.radius_xl}px;
+    border: 1px dashed {colors.accent};
+    border-radius: {radius.radius_lg}px;
 }}
 
 QFrame#DropZone[dragActive="true"] {{
@@ -192,8 +196,8 @@ QTableWidget {{
 
 QTableView {{
     background: {colors.surface};
-    border: 1px solid {colors.border};
-    border-radius: {radius.radius_lg}px;
+    border: 0;
+    border-radius: 0;
     gridline-color: {colors.border};
     selection-background-color: {colors.accent_soft};
     selection-color: {colors.text_primary};
@@ -211,7 +215,7 @@ QTableView::item:hover {{
 
 QHeaderView::section {{
     background: {colors.background};
-    color: {colors.text_primary};
+    color: {colors.text_secondary};
     border: 0;
     border-bottom: 1px solid {colors.border};
     padding: {spacing.space_2}px;
@@ -305,8 +309,8 @@ QLabel#InlineNotification {{
 }}
 
 QWidget#StatusBannerInfo {{
-    background: {colors.info_soft};
-    border: 1px solid {colors.info};
+    background: {colors.surface_alt};
+    border: 1px solid {colors.border};
     border-radius: {radius.radius_md}px;
 }}
 
@@ -318,7 +322,7 @@ QWidget#StatusBannerWarning {{
 
 QWidget#StatusBannerSuccess {{
     background: {colors.success_soft};
-    border: 1px solid {colors.success};
+    border: 0;
     border-radius: {radius.radius_md}px;
 }}
 
@@ -337,6 +341,11 @@ QWidget#StatusBannerMuted {{
 QLabel#BrandSymbol {{
     color: {colors.accent_primary};
     font-weight: 800;
+}}
+
+QLabel#EmptyDetailMessage {{
+    color: {colors.text_muted};
+    font-size: {typography.body_size}px;
 }}
 """
 

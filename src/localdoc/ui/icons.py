@@ -6,29 +6,29 @@ from PySide6.QtCore import QByteArray, QSize
 from PySide6.QtGui import QIcon, QPixmap
 
 ICON_COLORS = {
-    "blue": "#2C6EE8",
-    "purple": "#8754D9",
-    "coral": "#E85D43",
-    "mint": "#198E63",
-    "green": "#198E63",
-    "orange": "#F47C2B",
-    "red": "#D94F38",
-    "slate": "#5F6675",
-    "muted": "#818794",
+    "blue": "#D96846",
+    "purple": "#D96846",
+    "coral": "#D96846",
+    "mint": "#2F7D5B",
+    "green": "#2F7D5B",
+    "orange": "#D96846",
+    "red": "#B84A33",
+    "slate": "#686159",
+    "muted": "#817870",
 }
 
 FILE_TYPE_COLORS = {
     "PDF": "coral",
-    "DOCX": "blue",
-    "DOC": "blue",
+    "DOCX": "coral",
+    "DOC": "coral",
     "XLSX": "mint",
     "XLS": "mint",
     "PPTX": "orange",
     "PPT": "orange",
-    "IMG": "purple",
-    "PNG": "purple",
-    "JPG": "purple",
-    "JPEG": "purple",
+    "IMG": "coral",
+    "PNG": "coral",
+    "JPG": "coral",
+    "JPEG": "coral",
     "TXT": "slate",
     "HTML": "orange",
     "HTM": "orange",
@@ -49,7 +49,7 @@ def file_type_icon(label: str, size: int = 26) -> QIcon:
 def status_icon(status: str, size: int = 18) -> QIcon:
     color = {
         "queued": "muted",
-        "processing": "blue",
+        "processing": "coral",
         "completed": "green",
         "failed": "red",
         "cancelled": "muted",

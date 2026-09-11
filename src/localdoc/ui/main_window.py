@@ -46,8 +46,8 @@ class MainWindow(QMainWindow):
         self.manager.on_job_changed = self.bridge.job_changed.emit
 
         self.setWindowTitle("LocalDoc")
-        self.resize(1180, 760)
-        self.setMinimumSize(1000, 650)
+        self.resize(1180, 780)
+        self.setMinimumSize(1060, 720)
         self._apply_window_icon()
 
         self._build_ui()
@@ -95,7 +95,7 @@ class MainWindow(QMainWindow):
         bar = QFrame()
         bar.setObjectName("TopBar")
         layout = QHBoxLayout(bar)
-        layout.setContentsMargins(24, 12, 24, 12)
+        layout.setContentsMargins(24, 10, 24, 10)
         layout.setSpacing(12)
 
         brand_icon = QLabel()
@@ -103,9 +103,17 @@ class MainWindow(QMainWindow):
         brand_icon.setPixmap(branding_pixmap("localdoc-app-icon.png", 28))
         brand_icon.setAccessibleName("Icono LocalDoc")
 
+        brand_block = QWidget()
+        brand_layout = QVBoxLayout(brand_block)
+        brand_layout.setContentsMargins(0, 0, 20, 0)
+        brand_layout.setSpacing(0)
         brand = QLabel("LocalDoc")
         brand.setObjectName("Brand")
         brand.setAccessibleName("LocalDoc")
+        subtitle = QLabel("Documentos locales. Ideas más libres.")
+        subtitle.setObjectName("BrandSubtitle")
+        brand_layout.addWidget(brand)
+        brand_layout.addWidget(subtitle)
 
         self.navigation = NavigationTabs()
         self.navigation.current_changed.connect(self._switch_view)
@@ -115,16 +123,16 @@ class MainWindow(QMainWindow):
         self.ocr_status = QLabel("OCR: verificando")
         self.ocr_status.setObjectName("Pill")
         self.settings_button = GhostButton(
-            "Configuracion",
-            tooltip="Abrir configuracion",
-            accessible_name="Configuracion",
+            "Configuración",
+            tooltip="Abrir configuración",
+            accessible_name="Configuración",
             icon_name="settings",
-            icon_color="purple",
+            icon_color="slate",
         )
         self.settings_button.clicked.connect(self._open_settings)
 
         layout.addWidget(brand_icon)
-        layout.addWidget(brand)
+        layout.addWidget(brand_block)
         layout.addWidget(self.navigation)
         layout.addStretch(1)
         layout.addWidget(self.engine_status)

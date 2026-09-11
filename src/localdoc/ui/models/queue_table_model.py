@@ -9,7 +9,7 @@ from localdoc.ui.icons import file_type_icon, status_icon
 
 STATUS_LABELS = {
     JobStatus.QUEUED: "En espera",
-    JobStatus.PROCESSING: "Procesando",
+    JobStatus.PROCESSING: "Convirtiendo",
     JobStatus.COMPLETED: "Completado",
     JobStatus.FAILED: "Error",
     JobStatus.CANCELLED: "Cancelado",
@@ -27,9 +27,10 @@ def format_size(size_bytes: int) -> str:
 def job_row(job: ConversionJob) -> list[str]:
     return [
         file_label(job),
+        file_type_label(job),
         format_size(job.size_bytes),
         STATUS_LABELS[job.status],
-        "",
+        action_label(job),
     ]
 
 
@@ -44,8 +45,20 @@ def file_label(job: ConversionJob) -> str:
     return f"[{file_type_label(job)}] {job.name}"
 
 
+def action_label(job: ConversionJob) -> str:
+    if job.status == JobStatus.COMPLETED and job.output_path:
+        return "Abrir"
+    if job.status == JobStatus.FAILED:
+        return "Reintentar"
+    if job.status == JobStatus.PROCESSING:
+        return "Cancelar"
+    if job.status == JobStatus.QUEUED:
+        return "Eliminar"
+    return ""
+
+
 class QueueTableModel(QAbstractTableModel):
-    headers = ["Archivo", "Tamano", "Estado", ""]
+    headers = ["Archivo", "Tipo", "Tamaño", "Estado", "Acciones"]
 
     def __init__(self, jobs: list[ConversionJob] | None = None) -> None:
         super().__init__()
@@ -68,19 +81,19 @@ class QueueTableModel(QAbstractTableModel):
         if role == Qt.ItemDataRole.DecorationRole:
             if index.column() == 0:
                 return file_type_icon(file_type_label(job))
-            if index.column() == 2:
+            if index.column() == 3:
                 return status_icon(job.status.value)
-        if role == Qt.ItemDataRole.ForegroundRole and index.column() == 2:
+        if role == Qt.ItemDataRole.ForegroundRole and index.column() == 3:
             return QColor(
                 {
-                    JobStatus.QUEUED: "#7D879D",
-                    JobStatus.PROCESSING: "#286BF4",
-                    JobStatus.COMPLETED: "#1FA46F",
-                    JobStatus.FAILED: "#D94D4D",
-                    JobStatus.CANCELLED: "#7D879D",
+                    JobStatus.QUEUED: "#817870",
+                    JobStatus.PROCESSING: "#D96846",
+                    JobStatus.COMPLETED: "#2F7D5B",
+                    JobStatus.FAILED: "#B84A33",
+                    JobStatus.CANCELLED: "#817870",
                 }[job.status]
             )
-        if role == Qt.ItemDataRole.FontRole and index.column() in {0, 2}:
+        if role == Qt.ItemDataRole.FontRole and index.column() in {0, 3}:
             font = QFont()
             font.setWeight(QFont.Weight.DemiBold)
             return font

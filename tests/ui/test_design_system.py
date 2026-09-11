@@ -12,8 +12,8 @@ from localdoc.ui.tokens import DARK_TOKENS, LIGHT_TOKENS, ThemeMode
 def test_light_theme_stylesheet_uses_accessible_primary_color() -> None:
     stylesheet = build_stylesheet(LIGHT_TOKENS)
 
-    assert "#FFFCF7" in stylesheet
-    assert "#E85D43" in stylesheet
+    assert "#FFFCF8" in stylesheet
+    assert "#D96846" in stylesheet
     assert "#FFF0E8" in stylesheet
     assert "QPushButton:focus" in stylesheet
     assert "QPushButton#PrimaryButton" in stylesheet
@@ -45,8 +45,8 @@ def test_theme_manager_applies_stylesheet(qtbot) -> None:
 def test_button_components_set_roles_and_accessibility(qtbot) -> None:
     buttons = [
         PrimaryButton("Convertir", tooltip="Convertir archivos pendientes"),
-        SecondaryButton("Cancelar", tooltip="Cancelar conversion"),
-        GhostButton("Configuracion", tooltip="Abrir configuracion"),
+        SecondaryButton("Cancelar", tooltip="Cancelar conversión"),
+        GhostButton("Configuración", tooltip="Abrir configuración"),
         IconButton("...", tooltip="Mas acciones"),
     ]
     for button in buttons:
@@ -61,7 +61,7 @@ def test_button_components_set_roles_and_accessibility(qtbot) -> None:
 
 
 def test_functional_icons_are_available(qtbot) -> None:
-    assert not icon("upload", "blue").isNull()
+    assert not icon("upload", "coral").isNull()
     assert not file_type_icon("PDF").isNull()
     assert not status_icon("completed").isNull()
 
@@ -69,8 +69,8 @@ def test_functional_icons_are_available(qtbot) -> None:
 def test_branding_assets_are_available(qtbot) -> None:
     expected_assets = [
         "localdoc-app-icon.png",
-        "localdoc-loading.png",
-        "localdoc-completed.png",
+        "localdoc-upload-illustration.png",
+        "localdoc-conversion-complete.png",
         "localdoc.ico",
     ]
 
@@ -78,8 +78,8 @@ def test_branding_assets_are_available(qtbot) -> None:
         assert branding_path(filename).exists()
 
     assert not branding_pixmap("localdoc-app-icon.png", 32).isNull()
-    assert not branding_pixmap("localdoc-loading.png", 64).isNull()
-    assert not branding_pixmap("localdoc-completed.png", 64).isNull()
+    assert not branding_pixmap("localdoc-upload-illustration.png", 64).isNull()
+    assert not branding_pixmap("localdoc-conversion-complete.png", 64).isNull()
 
 
 def test_button_components_accept_functional_icons(qtbot) -> None:
@@ -87,7 +87,7 @@ def test_button_components_accept_functional_icons(qtbot) -> None:
         "Convertir",
         tooltip="Convertir archivos pendientes",
         icon_name="upload",
-        icon_color="blue",
+        icon_color="coral",
     )
     qtbot.addWidget(button)
 

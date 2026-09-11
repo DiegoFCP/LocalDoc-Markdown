@@ -30,7 +30,7 @@ class NavigationTabs(QWidget):
             self._refresh_tab_state()
 
     def _add_tab(self, text: str, tab_id: int, tooltip: str, icon_name: str) -> GhostButton:
-        button = GhostButton(text, tooltip=tooltip, icon_name=icon_name, icon_color="blue")
+        button = GhostButton(text, tooltip=tooltip, icon_name=icon_name, icon_color="coral")
         button.setCheckable(True)
         self.group.addButton(button, tab_id)
         button.toggled.connect(self._refresh_tab_state)

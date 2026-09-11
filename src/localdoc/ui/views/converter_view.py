@@ -22,6 +22,7 @@ from localdoc.application.conversion_manager import ConversionManager
 from localdoc.domain.enums import JobStatus
 from localdoc.domain.exceptions import LocalDocError
 from localdoc.domain.models import P0_EXTENSIONS, ConversionJob
+from localdoc.ui.assets import branding_pixmap
 from localdoc.ui.components import (
     IconButton,
     InlineNotification,
@@ -71,11 +72,12 @@ class ConverterView(QWidget):
 
         eyebrow = QLabel("CONVIERTE · LEE · EDITA · AVANZA")
         eyebrow.setObjectName("Muted")
-        title = QLabel("Convierte tus documentos de forma simple y local")
+        title = QLabel("Tu documento, listo para trabajar")
         title.setObjectName("HeroTitle")
         title.setWordWrap(True)
         subtitle = QLabel(
-            "PDF, Word, Excel, PowerPoint, imagenes y mas. Todo en tu equipo, con total privacidad."
+            "Convierte tus archivos a Markdown de forma rápida y privada. "
+            "Arrastra y suelta tus documentos aquí o selecciona archivos desde tu equipo."
         )
         subtitle.setObjectName("Muted")
         subtitle.setWordWrap(True)
@@ -89,9 +91,9 @@ class ConverterView(QWidget):
         privacy_layout = QHBoxLayout(privacy)
         privacy_layout.setContentsMargins(14, 10, 14, 10)
         privacy_layout.setSpacing(8)
-        privacy_label = QLabel("Privacidad primero")
-        privacy_label.setObjectName("CardTitle")
-        privacy_text = QLabel("Procesamiento 100% local. Tus archivos permanecen en tu equipo.")
+        privacy_label = QLabel("Procesamiento 100% local.")
+        privacy_label.setObjectName("Muted")
+        privacy_text = QLabel("Tus archivos permanecen en tu equipo.")
         privacy_text.setObjectName("Muted")
         privacy_text.setWordWrap(True)
         privacy_layout.addWidget(privacy_label)
@@ -121,9 +123,10 @@ class ConverterView(QWidget):
         self.table.verticalHeader().setVisible(False)
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.horizontalHeader().setMinimumSectionSize(80)
-        self.table.setColumnWidth(0, 380)
-        self.table.setColumnWidth(1, 110)
-        self.table.setColumnWidth(2, 140)
+        self.table.setColumnWidth(0, 320)
+        self.table.setColumnWidth(1, 90)
+        self.table.setColumnWidth(2, 100)
+        self.table.setColumnWidth(3, 140)
         self.table.clicked.connect(self._select_index)
         self.table.setAccessibleName("Cola de archivos")
 
@@ -131,12 +134,12 @@ class ConverterView(QWidget):
         self.convert_button = PrimaryButton(
             "Convertir",
             tooltip="Convertir archivos pendientes",
-            icon_name="upload",
+            icon_name="check",
             icon_color="#FFFFFF",
         )
         self.cancel_button = SecondaryButton(
             "Cancelar",
-            tooltip="Solicitar cancelacion de la conversion activa",
+            tooltip="Solicitar cancelación de la conversión activa",
             icon_name="minus",
             icon_color="slate",
         )
@@ -174,16 +177,34 @@ class ConverterView(QWidget):
 
         title = QLabel("Archivo seleccionado")
         title.setObjectName("CardTitle")
+
+        self.empty_detail = QWidget()
+        empty_layout = QVBoxLayout(self.empty_detail)
+        empty_layout.setContentsMargins(20, 32, 20, 32)
+        empty_layout.setSpacing(12)
+        empty_layout.addStretch(1)
+        empty_icon = QLabel()
+        empty_icon.setPixmap(branding_pixmap("localdoc-conversion-complete.png", 120))
+        empty_icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        empty_icon.setAccessibleName("Ilustración de documento")
+        empty_message = QLabel("Selecciona un archivo para ver el detalle.")
+        empty_message.setObjectName("EmptyDetailMessage")
+        empty_message.setWordWrap(True)
+        empty_message.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        empty_layout.addWidget(empty_icon)
+        empty_layout.addWidget(empty_message)
+        empty_layout.addStretch(1)
+
         file_card = QFrame()
         file_card.setObjectName("FileCard")
         file_card_layout = QVBoxLayout(file_card)
         file_card_layout.setContentsMargins(14, 12, 14, 12)
         file_card_layout.setSpacing(4)
-        self.detail_name = QLabel("Sin seleccion")
+        self.detail_name = QLabel("")
         self.detail_name.setObjectName("HeroTitle")
         self.detail_name.setStyleSheet("font-size: 18px;")
         self.detail_name.setWordWrap(True)
-        self.detail_meta = QLabel("Selecciona un archivo para ver el detalle.")
+        self.detail_meta = QLabel("")
         self.detail_meta.setObjectName("Muted")
         self.detail_meta.setWordWrap(True)
         file_card_layout.addWidget(self.detail_name)
@@ -195,13 +216,13 @@ class ConverterView(QWidget):
             "Copiar",
             tooltip="Copiar la vista Markdown al portapapeles",
             icon_name="copy",
-            icon_color="blue",
+            icon_color="coral",
         )
         self.open_file_button = SecondaryButton(
             "Abrir",
             tooltip="Abrir el archivo Markdown generado",
             icon_name="open",
-            icon_color="purple",
+            icon_color="coral",
         )
         self.open_folder_button = SecondaryButton(
             "Abrir carpeta",
@@ -234,9 +255,14 @@ class ConverterView(QWidget):
         self.tabs.addTab(self.details, "Detalles")
 
         layout.addWidget(title)
-        layout.addWidget(file_card)
+        self.file_card = file_card
+        self.action_widget = QWidget()
+        self.action_widget.setLayout(action_grid)
+
+        layout.addWidget(self.empty_detail, 1)
+        layout.addWidget(self.file_card)
         layout.addWidget(self.status_banner)
-        layout.addLayout(action_grid)
+        layout.addWidget(self.action_widget)
         layout.addWidget(self.tabs, 1)
         return panel
 
@@ -309,17 +335,28 @@ class ConverterView(QWidget):
         self.queue_title.setText(f"Archivos en cola ({len(self.manager.jobs)})")
         self.table.setVisible(bool(self.manager.jobs))
         self.empty_queue.setVisible(not self.manager.jobs)
+        self.queue_menu_button.setVisible(bool(self.manager.jobs))
         self.refresh_running_state()
 
     def refresh_detail(self, job: ConversionJob | None) -> None:
         if job is None:
-            self.detail_name.setText("Sin seleccion")
-            self.detail_meta.setText("Selecciona un archivo para ver el detalle.")
+            self.empty_detail.setVisible(True)
+            self.file_card.setVisible(False)
+            self.status_banner.setVisible(False)
+            self.action_widget.setVisible(False)
+            self.tabs.setVisible(False)
+            self.detail_name.setText("")
+            self.detail_meta.setText("")
             self.status_banner.set_status(None)
             self.preview.clear()
             self.details.set_job(None)
             self.refresh_action_buttons(None)
             return
+        self.empty_detail.setVisible(False)
+        self.file_card.setVisible(True)
+        self.status_banner.setVisible(True)
+        self.action_widget.setVisible(True)
+        self.tabs.setVisible(True)
         self.detail_name.setText(job.name)
         self.detail_meta.setText(f"{file_type_label(job)} · {format_size(job.size_bytes)}")
         self.status_banner.set_status(job.status)
@@ -349,7 +386,7 @@ class ConverterView(QWidget):
         self.convert_button.setEnabled(pending_count > 0 and not running)
         self.cancel_button.setEnabled(running)
         if running:
-            self.convert_button.setText("Procesando...")
+            self.convert_button.setText("Convirtiendo...")
             return
         if pending_count == 0:
             self.convert_button.setText("Convertir")

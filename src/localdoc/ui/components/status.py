@@ -26,7 +26,7 @@ class StatusBanner(QWidget):
         content = QVBoxLayout()
         content.setContentsMargins(0, 0, 0, 0)
         content.setSpacing(2)
-        self.title = QLabel("Sin seleccion")
+        self.title = QLabel("Sin selección")
         self.title.setObjectName("CardTitle")
         self.description = QLabel("Selecciona un archivo para ver su estado.")
         self.description.setObjectName("Muted")
@@ -38,9 +38,13 @@ class StatusBanner(QWidget):
 
     def set_status(self, status: JobStatus | None) -> None:
         content = {
-            None: ("Sin seleccion", "Selecciona un archivo para ver su estado.", "Info"),
+            None: ("Sin selección", "Selecciona un archivo para ver su estado.", "Info"),
             JobStatus.QUEUED: ("En espera", "Este archivo esta listo para convertirse.", "Info"),
-            JobStatus.PROCESSING: ("Procesando", "Estamos convirtiendo este documento.", "Warning"),
+            JobStatus.PROCESSING: (
+                "Convirtiendo",
+                "Estamos convirtiendo este documento.",
+                "Warning",
+            ),
             JobStatus.COMPLETED: (
                 "Conversion completada",
                 "Tu documento ya esta en formato Markdown.",
@@ -56,9 +60,9 @@ class StatusBanner(QWidget):
         title, description, tone = content[status]
         self.setObjectName(f"StatusBanner{tone}")
         if status == JobStatus.COMPLETED:
-            self.icon.setPixmap(branding_pixmap("localdoc-completed.png", 58))
+            self.icon.setPixmap(branding_pixmap("localdoc-conversion-complete.png", 58))
         elif status == JobStatus.PROCESSING:
-            self.icon.setPixmap(branding_pixmap("localdoc-loading.png", 58))
+            self.icon.setPixmap(branding_pixmap("localdoc-upload-illustration.png", 58))
         else:
             icon_key = status.value if status else "queued"
             self.icon.setPixmap(status_icon(icon_key, 24).pixmap(QSize(24, 24)))

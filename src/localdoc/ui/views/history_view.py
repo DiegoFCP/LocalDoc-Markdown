@@ -55,7 +55,7 @@ class HistoryView(QWidget):
             "Actualizar",
             tooltip="Actualizar historial",
             icon_name="history",
-            icon_color="blue",
+            icon_color="coral",
         )
         self.search.textChanged.connect(self.apply_filters)
         self.status_filter.currentTextChanged.connect(self.apply_filters)
@@ -83,7 +83,7 @@ class HistoryView(QWidget):
             "Abrir Markdown",
             tooltip="Abrir salida Markdown",
             icon_name="open",
-            icon_color="purple",
+            icon_color="coral",
         )
         self.open_folder_button = SecondaryButton(
             "Abrir carpeta",
@@ -176,5 +176,5 @@ class HistoryView(QWidget):
             "failed": "Error",
             "cancelled": "Cancelado",
             "queued": "En espera",
-            "processing": "Procesando",
+            "processing": "Convirtiendo",
         }.get(job.status.value, job.status.value)

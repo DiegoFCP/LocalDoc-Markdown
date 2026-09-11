@@ -6,7 +6,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout
 
 from localdoc.ui.assets import branding_pixmap
-from localdoc.ui.components import SecondaryButton
+from localdoc.ui.components import PrimaryButton
 
 
 class DropZone(QFrame):
@@ -18,33 +18,33 @@ class DropZone(QFrame):
         self.setObjectName("DropZone")
         self.setProperty("dragActive", False)
         self.setAcceptDrops(True)
-        self.setMinimumHeight(180)
+        self.setMinimumHeight(220)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(10)
 
         self.icon = QLabel()
-        self.icon.setPixmap(branding_pixmap("localdoc-loading.png", 84))
+        self.icon.setPixmap(branding_pixmap("localdoc-upload-illustration.png", 84))
         self.icon.setAccessibleName("Icono de carga de documentos")
         self.icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.title = QLabel("Arrastra tus documentos aqui")
+        self.title = QLabel("Arrastra y suelta tus documentos aquí")
         self.title.setObjectName("HeroTitle")
         self.title.setWordWrap(True)
         self.title.setStyleSheet("font-size: 20px;")
         self.title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        subtitle = QLabel("o selecciona archivos desde tu equipo")
+        subtitle = QLabel("o haz clic para seleccionar archivos")
         subtitle.setObjectName("Muted")
         subtitle.setWordWrap(True)
         subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        formats = QLabel("PDF · Word · Excel · PowerPoint · Imagenes")
-        formats.setObjectName("Pill")
+        formats = QLabel("PDF, Word, PowerPoint, Excel, TXT, imágenes (JPG, PNG) y más.")
+        formats.setObjectName("Muted")
         formats.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        button = SecondaryButton(
+        button = PrimaryButton(
             "Seleccionar archivos",
             tooltip="Seleccionar documentos locales para convertir",
             icon_name="add",
@@ -87,7 +87,9 @@ class DropZone(QFrame):
     def _set_drag_active(self, active: bool) -> None:
         self.setProperty("dragActive", active)
         self.title.setText(
-            "Suelta para agregar tus archivos" if active else "Arrastra tus documentos aqui"
+            "Suelta para agregar tus archivos"
+            if active
+            else "Arrastra y suelta tus documentos aquí"
         )
         self.style().unpolish(self)
         self.style().polish(self)

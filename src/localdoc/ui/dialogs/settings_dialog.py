@@ -30,7 +30,7 @@ class SettingsDialog(QDialog):
     ) -> None:
         super().__init__(parent)
         self.tesseract_adapter = tesseract_adapter
-        self.setWindowTitle("Configuracion")
+        self.setWindowTitle("Configuración")
         self.setMinimumWidth(620)
 
         self.output_dir = QLineEdit(str(settings.output_dir))
@@ -64,7 +64,7 @@ class SettingsDialog(QDialog):
 
         layout = QVBoxLayout(self)
         layout.setSpacing(16)
-        title = QLabel("Configuracion")
+        title = QLabel("Configuración")
         title.setObjectName("HeroTitle")
         title.setStyleSheet("font-size: 22px;")
         layout.addWidget(title)
@@ -164,7 +164,7 @@ class SettingsDialog(QDialog):
             "Cambiar",
             tooltip="Seleccionar ruta",
             icon_name="folder",
-            icon_color="blue",
+            icon_color="coral",
         )
         button.clicked.connect(callback)
         row.addWidget(line_edit)

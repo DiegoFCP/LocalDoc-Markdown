@@ -14,10 +14,10 @@ class FileDetails(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         for label in (
             "Tipo",
-            "Tamano",
+            "Tamaño",
             "Hash",
             "Fecha",
-            "Duracion",
+            "Duración",
             "Intentos",
             "Ruta origen",
             "Ruta salida",
@@ -36,12 +36,12 @@ class FileDetails(QWidget):
             return
         duration = f"{job.duration_seconds:.2f}s" if job.duration_seconds is not None else "-"
         self.rows["Tipo"].setText(job.extension.upper() or "-")
-        self.rows["Tamano"].setText(format_size(job.size_bytes))
+        self.rows["Tamaño"].setText(format_size(job.size_bytes))
         self.rows["Hash"].setText(job.source_hash or "-")
         self.rows["Fecha"].setText(job.created_at.strftime("%Y-%m-%d %H:%M:%S"))
-        self.rows["Duracion"].setText(duration)
+        self.rows["Duración"].setText(duration)
         self.rows["Intentos"].setText(str(job.attempts))
         self.rows["Ruta origen"].setText(str(job.source_path))
         self.rows["Ruta salida"].setText(str(job.output_path) if job.output_path else "-")
-        self.rows["OCR"].setText("Si" if job.uses_ocr else "No")
+        self.rows["OCR"].setText("Sí" if job.uses_ocr else "No")
         self.rows["Estado"].setText(STATUS_LABELS[job.status])
