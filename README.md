@@ -43,6 +43,8 @@ Download `LocalDoc-Windows.zip` from the [latest GitHub Release](https://github.
 LocalDoc\LocalDoc.exe
 ```
 
+The release is a portable Windows package, not an installer. Because the EXE is not code-signed yet, Windows SmartScreen may ask for confirmation the first time it runs.
+
 For image OCR, install Tesseract OCR separately. The default Windows path is:
 
 ```text
@@ -81,6 +83,8 @@ dist\LocalDoc-Windows.zip
 dist\LocalDoc.exe.sha256
 ```
 
+GitHub Actions builds the same release package when a `v*` tag is pushed.
+
 ## Project Layout
 
 ```text
@@ -103,6 +107,8 @@ examples/              Small sample input and output
 - [Troubleshooting](docs/troubleshooting.md)
 - [Release process](docs/release.md)
 - [Architecture](docs/architecture.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
 
 ## License
 

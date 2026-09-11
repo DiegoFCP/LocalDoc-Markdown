@@ -11,9 +11,10 @@ powershell -ExecutionPolicy Bypass -File .\scripts\Setup-Environment.ps1
 ## Validate Changes
 
 ```powershell
-.\.venv\Scripts\python.exe -m py_compile apps\desktop\app.py apps\streamlit\app.py
+.\.venv\Scripts\python.exe -m ruff check .
+.\.venv\Scripts\python.exe -m pytest
 .\.venv\Scripts\python.exe -m pip check
-powershell -ExecutionPolicy Bypass -File .\scripts\Check-Environment.ps1
+.\.venv\Scripts\python.exe -m compileall -q src tests packaging
 ```
 
 ## Pull Requests
@@ -21,4 +22,4 @@ powershell -ExecutionPolicy Bypass -File .\scripts\Check-Environment.ps1
 - Keep changes focused.
 - Do not commit `.venv`, `work`, `dist`, generated EXEs, or local documents.
 - Update docs when changing user-facing behavior.
-- Mention whether the change affects desktop, Streamlit, CLI, pipeline, or packaging.
+- Mention whether the change affects conversion behavior, OCR, desktop UI, packaging, or documentation.
