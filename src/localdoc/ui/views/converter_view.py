@@ -101,9 +101,11 @@ class ConverterView(QWidget):
         self.queue_title = QLabel("Archivos en cola (0)")
         self.queue_title.setObjectName("CardTitle")
         self.queue_menu_button = IconButton(
-            "...",
+            "",
             tooltip="Mas acciones de cola",
             accessible_name="Mas acciones de cola",
+            icon_name="more",
+            icon_color="slate",
         )
         self.queue_menu_button.clicked.connect(self._open_queue_menu)
         header_row.addWidget(self.queue_title)
@@ -129,10 +131,14 @@ class ConverterView(QWidget):
         self.convert_button = PrimaryButton(
             "Convertir",
             tooltip="Convertir archivos pendientes",
+            icon_name="upload",
+            icon_color="#FFFFFF",
         )
         self.cancel_button = SecondaryButton(
             "Cancelar",
             tooltip="Solicitar cancelacion de la conversion activa",
+            icon_name="minus",
+            icon_color="slate",
         )
         self.convert_button.clicked.connect(self.start_conversion)
         self.cancel_button.clicked.connect(self.cancel_conversion)
@@ -168,6 +174,11 @@ class ConverterView(QWidget):
 
         title = QLabel("Archivo seleccionado")
         title.setObjectName("CardTitle")
+        file_card = QFrame()
+        file_card.setObjectName("FileCard")
+        file_card_layout = QVBoxLayout(file_card)
+        file_card_layout.setContentsMargins(14, 12, 14, 12)
+        file_card_layout.setSpacing(4)
         self.detail_name = QLabel("Sin seleccion")
         self.detail_name.setObjectName("HeroTitle")
         self.detail_name.setStyleSheet("font-size: 18px;")
@@ -175,22 +186,36 @@ class ConverterView(QWidget):
         self.detail_meta = QLabel("Selecciona un archivo para ver el detalle.")
         self.detail_meta.setObjectName("Muted")
         self.detail_meta.setWordWrap(True)
+        file_card_layout.addWidget(self.detail_name)
+        file_card_layout.addWidget(self.detail_meta)
 
         self.status_banner = StatusBanner()
 
         self.copy_button = SecondaryButton(
             "Copiar",
             tooltip="Copiar la vista Markdown al portapapeles",
+            icon_name="copy",
+            icon_color="blue",
         )
         self.open_file_button = SecondaryButton(
             "Abrir",
             tooltip="Abrir el archivo Markdown generado",
+            icon_name="open",
+            icon_color="purple",
         )
         self.open_folder_button = SecondaryButton(
             "Abrir carpeta",
             tooltip="Abrir la carpeta de salida",
+            icon_name="folder",
+            icon_color="mint",
         )
-        self.more_button = IconButton("...", tooltip="Mas acciones", accessible_name="Mas acciones")
+        self.more_button = IconButton(
+            "",
+            tooltip="Mas acciones",
+            accessible_name="Mas acciones",
+            icon_name="more",
+            icon_color="slate",
+        )
         self.copy_button.clicked.connect(self.copy_markdown)
         self.open_file_button.clicked.connect(self.open_output_file)
         self.open_folder_button.clicked.connect(self.open_output_folder)
@@ -209,8 +234,7 @@ class ConverterView(QWidget):
         self.tabs.addTab(self.details, "Detalles")
 
         layout.addWidget(title)
-        layout.addWidget(self.detail_name)
-        layout.addWidget(self.detail_meta)
+        layout.addWidget(file_card)
         layout.addWidget(self.status_banner)
         layout.addLayout(action_grid)
         layout.addWidget(self.tabs, 1)
@@ -307,6 +331,11 @@ class ConverterView(QWidget):
         if not self.selected_job_id:
             return None
         return next((job for job in self.manager.jobs if job.id == self.selected_job_id), None)
+
+    def clear_context(self) -> None:
+        self.selected_job_id = None
+        self.table.clearSelection()
+        self.refresh_detail(None)
 
     def refresh_action_buttons(self, job: ConversionJob | None) -> None:
         has_output = bool(job and job.output_path and job.output_path.exists())

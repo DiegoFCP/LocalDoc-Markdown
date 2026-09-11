@@ -3,6 +3,7 @@ from __future__ import annotations
 from PySide6.QtWidgets import QApplication
 
 from localdoc.ui.components import GhostButton, IconButton, PrimaryButton, SecondaryButton
+from localdoc.ui.icons import file_type_icon, icon, status_icon
 from localdoc.ui.theme import ThemeManager, build_stylesheet
 from localdoc.ui.tokens import DARK_TOKENS, LIGHT_TOKENS, ThemeMode
 
@@ -56,3 +57,21 @@ def test_button_components_set_roles_and_accessibility(qtbot) -> None:
     assert buttons[3].objectName() == "IconButton"
     assert all(button.accessibleName() for button in buttons)
     assert all(button.toolTip() for button in buttons)
+
+
+def test_functional_icons_are_available(qtbot) -> None:
+    assert not icon("upload", "blue").isNull()
+    assert not file_type_icon("PDF").isNull()
+    assert not status_icon("completed").isNull()
+
+
+def test_button_components_accept_functional_icons(qtbot) -> None:
+    button = PrimaryButton(
+        "Convertir",
+        tooltip="Convertir archivos pendientes",
+        icon_name="upload",
+        icon_color="blue",
+    )
+    qtbot.addWidget(button)
+
+    assert not button.icon().isNull()

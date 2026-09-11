@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QKeySequence
+
 from localdoc.application.conversion_manager import ConversionManager
 from localdoc.application.history_service import HistoryService
 from localdoc.application.settings_service import SettingsService
@@ -50,6 +53,7 @@ def test_main_window_initializes(tmp_path: Path, qtbot) -> None:
     assert window.convert_button.accessibleName() == "Convertir"
     assert window.navigation.convert_button.isChecked()
     assert window.navigation.history_button.text() == "Historial"
+    assert any(action.shortcut() == QKeySequence("Esc") for action in window.actions())
 
 
 def test_main_window_adds_file_to_queue(tmp_path: Path, qtbot) -> None:
@@ -61,6 +65,19 @@ def test_main_window_adds_file_to_queue(tmp_path: Path, qtbot) -> None:
 
     assert window.table.model().rowCount() == 1
     assert window.manager.jobs[0].name == "nota.txt"
+
+
+def test_queue_model_exposes_visual_icons(tmp_path: Path, qtbot) -> None:
+    window = build_window(tmp_path, qtbot)
+    source = tmp_path / "nota.txt"
+    source.write_text("hola", encoding="utf-8")
+    window._add_paths([source])
+
+    file_icon = window.table.model().index(0, 0).data(Qt.ItemDataRole.DecorationRole)
+    status_icon = window.table.model().index(0, 2).data(Qt.ItemDataRole.DecorationRole)
+
+    assert file_icon is not None
+    assert status_icon is not None
 
 
 def test_main_window_runs_conversion_and_shows_preview(tmp_path: Path, qtbot) -> None:

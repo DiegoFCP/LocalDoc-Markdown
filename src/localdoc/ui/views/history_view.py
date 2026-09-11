@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
 from localdoc.application.history_service import HistoryService
 from localdoc.domain.models import ConversionJob
 from localdoc.ui.components import EmptyState, SecondaryButton
+from localdoc.ui.icons import icon
 from localdoc.ui.models.history_table_model import HistoryTableModel
 from localdoc.ui.models.queue_table_model import file_type_label
 from localdoc.ui.widgets.file_details import FileDetails
@@ -43,13 +44,19 @@ class HistoryView(QWidget):
         self.search = QLineEdit()
         self.search.setPlaceholderText("Buscar conversiones...")
         self.search.setAccessibleName("Buscar conversiones")
+        self.search.addAction(icon("search", "muted"), QLineEdit.ActionPosition.LeadingPosition)
         self.status_filter = QComboBox()
         self.status_filter.addItems(["Todos", "Completado", "Error", "Cancelado", "En espera"])
         self.status_filter.setAccessibleName("Filtro por estado")
         self.type_filter = QComboBox()
         self.type_filter.addItem("Todos")
         self.type_filter.setAccessibleName("Filtro por tipo")
-        self.refresh_button = SecondaryButton("Actualizar", tooltip="Actualizar historial")
+        self.refresh_button = SecondaryButton(
+            "Actualizar",
+            tooltip="Actualizar historial",
+            icon_name="history",
+            icon_color="blue",
+        )
         self.search.textChanged.connect(self.apply_filters)
         self.status_filter.currentTextChanged.connect(self.apply_filters)
         self.type_filter.currentTextChanged.connect(self.apply_filters)
@@ -72,10 +79,17 @@ class HistoryView(QWidget):
 
         self.empty = EmptyState("Aun no hay conversiones", "Tus conversiones apareceran aqui.")
         self.details = FileDetails()
-        self.open_file_button = SecondaryButton("Abrir Markdown", tooltip="Abrir salida Markdown")
+        self.open_file_button = SecondaryButton(
+            "Abrir Markdown",
+            tooltip="Abrir salida Markdown",
+            icon_name="open",
+            icon_color="purple",
+        )
         self.open_folder_button = SecondaryButton(
             "Abrir carpeta",
             tooltip="Abrir carpeta de salida",
+            icon_name="folder",
+            icon_color="mint",
         )
         self.open_file_button.clicked.connect(self.open_output_file)
         self.open_folder_button.clicked.connect(self.open_output_folder)
@@ -127,6 +141,12 @@ class HistoryView(QWidget):
         if not self.selected_job_id:
             return None
         return next((job for job in self.filtered_jobs if job.id == self.selected_job_id), None)
+
+    def clear_context(self) -> None:
+        self.selected_job_id = None
+        self.table.clearSelection()
+        self.details.set_job(None)
+        self._refresh_actions()
 
     def open_output_file(self) -> None:
         job = self.selected_job()

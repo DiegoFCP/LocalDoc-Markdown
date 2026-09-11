@@ -254,6 +254,39 @@ QFrame#PrivacyNote {{
     border-radius: {radius.radius_lg}px;
 }}
 
+QFrame#FileCard {{
+    background: {colors.surface_alt};
+    border: 1px solid {colors.border};
+    border-radius: {radius.radius_lg}px;
+}}
+
+QTabWidget::pane {{
+    border: 1px solid {colors.border};
+    border-radius: {radius.radius_lg}px;
+    background: {colors.surface};
+    top: -1px;
+}}
+
+QTabBar::tab {{
+    background: {colors.surface_alt};
+    color: {colors.text_secondary};
+    border: 1px solid {colors.border};
+    border-radius: {radius.radius_md}px;
+    padding: {spacing.space_2}px {spacing.space_4}px;
+    margin-right: {spacing.space_2}px;
+}}
+
+QTabBar::tab:selected {{
+    background: {colors.info};
+    color: #FFFFFF;
+    border-color: {colors.info};
+}}
+
+QTabBar::tab:hover:!selected {{
+    background: {colors.info_soft};
+    color: {colors.text_primary};
+}}
+
 QLabel#CardTitle {{
     font-size: {typography.card_title_size}px;
     font-weight: 700;

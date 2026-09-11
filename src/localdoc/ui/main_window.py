@@ -112,6 +112,8 @@ class MainWindow(QMainWindow):
             "Configuracion",
             tooltip="Abrir configuracion",
             accessible_name="Configuracion",
+            icon_name="settings",
+            icon_color="purple",
         )
         self.settings_button.clicked.connect(self._open_settings)
 
@@ -131,6 +133,7 @@ class MainWindow(QMainWindow):
             ("Ctrl+H", lambda: self._switch_view(1)),
             ("Ctrl+1", lambda: self._switch_view(0)),
             ("Ctrl+2", lambda: self._switch_view(1)),
+            ("Esc", self._clear_current_context),
         ]
         for key, callback in shortcuts:
             action = QAction(self)
@@ -154,6 +157,12 @@ class MainWindow(QMainWindow):
             self.ocr_status.setText(label)
         else:
             self.ocr_status.setText("OCR no disponible")
+
+    def _clear_current_context(self) -> None:
+        current = self.stack.currentWidget()
+        clear_context = getattr(current, "clear_context", None)
+        if clear_context is not None:
+            clear_context()
 
     def _browse_files(self) -> None:
         patterns = " ".join(f"*{extension}" for extension in sorted(P0_EXTENSIONS))

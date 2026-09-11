@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import QSize, Qt, Signal
 from PySide6.QtWidgets import QFrame, QLabel, QVBoxLayout
 
 from localdoc.ui.components import SecondaryButton
+from localdoc.ui.icons import icon
 
 
 class DropZone(QFrame):
@@ -23,9 +24,9 @@ class DropZone(QFrame):
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(10)
 
-        self.icon = QLabel("DOC")
-        self.icon.setObjectName("BrandSymbol")
-        self.icon.setAccessibleName("Icono de documentos")
+        self.icon = QLabel()
+        self.icon.setPixmap(icon("upload", "blue", 36).pixmap(QSize(36, 36)))
+        self.icon.setAccessibleName("Icono de carga de documentos")
         self.icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.title = QLabel("Arrastra tus documentos aqui")
@@ -46,6 +47,8 @@ class DropZone(QFrame):
         button = SecondaryButton(
             "Seleccionar archivos",
             tooltip="Seleccionar documentos locales para convertir",
+            icon_name="add",
+            icon_color="blue",
         )
         button.clicked.connect(self.browse_requested.emit)
 

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from PySide6.QtCore import QSize
 from PySide6.QtWidgets import QPushButton
+
+from localdoc.ui.icons import icon
 
 
 class BaseButton(QPushButton):
@@ -12,10 +15,15 @@ class BaseButton(QPushButton):
         *,
         tooltip: str = "",
         accessible_name: str = "",
+        icon_name: str = "",
+        icon_color: str = "slate",
         parent=None,
     ) -> None:
         super().__init__(text, parent)
         self.setObjectName(self.object_name)
+        if icon_name:
+            self.setIcon(icon(icon_name, icon_color))
+            self.setIconSize(QSize(18, 18))
         if tooltip:
             self.setToolTip(tooltip)
         self.setAccessibleName(accessible_name or text)
@@ -48,12 +56,16 @@ class IconButton(BaseButton):
         *,
         tooltip: str,
         accessible_name: str = "",
+        icon_name: str = "",
+        icon_color: str = "slate",
         parent=None,
     ) -> None:
         super().__init__(
             text,
             tooltip=tooltip,
             accessible_name=accessible_name or tooltip,
+            icon_name=icon_name,
+            icon_color=icon_color,
             parent=parent,
         )
         self.setFixedHeight(36)

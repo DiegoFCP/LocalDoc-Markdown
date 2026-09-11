@@ -16,8 +16,8 @@ class NavigationTabs(QWidget):
         layout.setSpacing(4)
         self.group = QButtonGroup(self)
         self.group.setExclusive(True)
-        self.convert_button = self._add_tab("Convertir", 0, "Ir a conversion")
-        self.history_button = self._add_tab("Historial", 1, "Ir al historial")
+        self.convert_button = self._add_tab("Convertir", 0, "Ir a conversion", "upload")
+        self.history_button = self._add_tab("Historial", 1, "Ir al historial", "history")
         layout.addWidget(self.convert_button)
         layout.addWidget(self.history_button)
         self.group.idClicked.connect(self.current_changed.emit)
@@ -29,8 +29,8 @@ class NavigationTabs(QWidget):
             button.setChecked(True)
             self._refresh_tab_state()
 
-    def _add_tab(self, text: str, tab_id: int, tooltip: str) -> GhostButton:
-        button = GhostButton(text, tooltip=tooltip)
+    def _add_tab(self, text: str, tab_id: int, tooltip: str, icon_name: str) -> GhostButton:
+        button = GhostButton(text, tooltip=tooltip, icon_name=icon_name, icon_color="blue")
         button.setCheckable(True)
         self.group.addButton(button, tab_id)
         button.toggled.connect(self._refresh_tab_state)

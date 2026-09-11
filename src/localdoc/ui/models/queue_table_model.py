@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt
+from PySide6.QtGui import QColor, QFont
 
 from localdoc.domain.enums import JobStatus
 from localdoc.domain.models import ConversionJob
+from localdoc.ui.icons import file_type_icon, status_icon
 
 STATUS_LABELS = {
     JobStatus.QUEUED: "En espera",
@@ -63,6 +65,25 @@ class QueueTableModel(QAbstractTableModel):
         job = self.jobs[index.row()]
         if role == Qt.ItemDataRole.DisplayRole:
             return job_row(job)[index.column()]
+        if role == Qt.ItemDataRole.DecorationRole:
+            if index.column() == 0:
+                return file_type_icon(file_type_label(job))
+            if index.column() == 2:
+                return status_icon(job.status.value)
+        if role == Qt.ItemDataRole.ForegroundRole and index.column() == 2:
+            return QColor(
+                {
+                    JobStatus.QUEUED: "#7D879D",
+                    JobStatus.PROCESSING: "#286BF4",
+                    JobStatus.COMPLETED: "#1FA46F",
+                    JobStatus.FAILED: "#D94D4D",
+                    JobStatus.CANCELLED: "#7D879D",
+                }[job.status]
+            )
+        if role == Qt.ItemDataRole.FontRole and index.column() in {0, 2}:
+            font = QFont()
+            font.setWeight(QFont.Weight.DemiBold)
+            return font
         if role == Qt.ItemDataRole.UserRole:
             return job.id
         return None

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
+from PySide6.QtCore import QSize
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 from localdoc.domain.enums import JobStatus
+from localdoc.ui.icons import status_icon
 
 
 class StatusBadge(QLabel):
@@ -15,16 +17,23 @@ class StatusBanner(QWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.setObjectName("StatusBannerInfo")
-        layout = QVBoxLayout(self)
+        layout = QHBoxLayout(self)
         layout.setContentsMargins(12, 10, 12, 10)
-        layout.setSpacing(2)
+        layout.setSpacing(10)
+        self.icon = QLabel()
+        self.icon.setAccessibleName("Icono de estado")
+        content = QVBoxLayout()
+        content.setContentsMargins(0, 0, 0, 0)
+        content.setSpacing(2)
         self.title = QLabel("Sin seleccion")
         self.title.setObjectName("CardTitle")
         self.description = QLabel("Selecciona un archivo para ver su estado.")
         self.description.setObjectName("Muted")
         self.description.setWordWrap(True)
-        layout.addWidget(self.title)
-        layout.addWidget(self.description)
+        content.addWidget(self.title)
+        content.addWidget(self.description)
+        layout.addWidget(self.icon)
+        layout.addLayout(content, 1)
 
     def set_status(self, status: JobStatus | None) -> None:
         content = {
@@ -45,6 +54,8 @@ class StatusBanner(QWidget):
         }
         title, description, tone = content[status]
         self.setObjectName(f"StatusBanner{tone}")
+        icon_key = status.value if status else "queued"
+        self.icon.setPixmap(status_icon(icon_key, 22).pixmap(QSize(22, 22)))
         self.title.setText(title)
         self.description.setText(description)
         self.style().unpolish(self)

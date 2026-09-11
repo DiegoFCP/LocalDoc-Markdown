@@ -119,7 +119,7 @@ class SettingsDialog(QDialog):
         if self.tesseract_adapter and self.tesseract_adapter.is_available():
             status = "Detectado"
         self.tesseract_status = QLabel(status)
-        self.tesseract_status.setObjectName("Muted")
+        self.tesseract_status.setObjectName("CardTitle")
         form.addRow("Estado", self.tesseract_status)
         form.addRow("OCR", self.ocr_enabled)
         form.addRow("Idioma", self.ocr_language)
@@ -139,8 +139,18 @@ class SettingsDialog(QDialog):
 
     def _buttons(self) -> QHBoxLayout:
         buttons = QHBoxLayout()
-        save = PrimaryButton("Guardar", tooltip="Guardar configuracion")
-        cancel = SecondaryButton("Cancelar", tooltip="Cerrar sin guardar cambios")
+        save = PrimaryButton(
+            "Guardar",
+            tooltip="Guardar configuracion",
+            icon_name="check",
+            icon_color="#FFFFFF",
+        )
+        cancel = SecondaryButton(
+            "Cancelar",
+            tooltip="Cerrar sin guardar cambios",
+            icon_name="minus",
+            icon_color="slate",
+        )
         save.clicked.connect(self.accept)
         cancel.clicked.connect(self.reject)
         buttons.addStretch(1)
@@ -150,7 +160,12 @@ class SettingsDialog(QDialog):
 
     def _path_row(self, line_edit: QLineEdit, callback) -> QHBoxLayout:
         row = QHBoxLayout()
-        button = SecondaryButton("Cambiar", tooltip="Seleccionar ruta")
+        button = SecondaryButton(
+            "Cambiar",
+            tooltip="Seleccionar ruta",
+            icon_name="folder",
+            icon_color="blue",
+        )
         button.clicked.connect(callback)
         row.addWidget(line_edit)
         row.addWidget(button)
