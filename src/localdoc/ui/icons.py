@@ -6,15 +6,15 @@ from PySide6.QtCore import QByteArray, QSize
 from PySide6.QtGui import QIcon, QPixmap
 
 ICON_COLORS = {
-    "blue": "#286BF4",
-    "purple": "#7047EB",
-    "coral": "#FF654F",
-    "mint": "#18B98A",
-    "green": "#1FA46F",
-    "orange": "#E6A11A",
-    "red": "#D94D4D",
-    "slate": "#59627A",
-    "muted": "#7D879D",
+    "blue": "#2C6EE8",
+    "purple": "#8754D9",
+    "coral": "#E85D43",
+    "mint": "#198E63",
+    "green": "#198E63",
+    "orange": "#F47C2B",
+    "red": "#D94F38",
+    "slate": "#5F6675",
+    "muted": "#818794",
 }
 
 FILE_TYPE_COLORS = {
@@ -118,7 +118,7 @@ def _svg(name: str, color: str, label: str = "") -> str:
         ),
         "open": (
             '<path d="M8 6H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11'
-            'a2 2 0 0 0 2-2v-3"/>'
+            ' a2 2 0 0 0 2-2v-3"/>'
             '<path d="M13 3h8v8"/><path d="M11 13 21 3"/>'
         ),
         "more": (

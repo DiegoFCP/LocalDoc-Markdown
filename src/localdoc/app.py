@@ -9,6 +9,7 @@ from localdoc.application.factory import build_conversion_manager, build_setting
 from localdoc.infrastructure.logging_config import configure_logging
 from localdoc.infrastructure.paths import get_default_paths
 from localdoc.infrastructure.tesseract_adapter import TesseractAdapter
+from localdoc.ui.assets import branding_path
 from localdoc.ui.main_window import MainWindow
 from localdoc.ui.theme import ThemeManager
 
@@ -23,6 +24,11 @@ def main() -> int:
     manager = build_conversion_manager(paths)
     app = QApplication(sys.argv)
     app.setApplicationName("LocalDoc")
+    icon_path = branding_path("localdoc.ico")
+    if icon_path.exists():
+        from PySide6.QtGui import QIcon
+
+        app.setWindowIcon(QIcon(str(icon_path)))
     ThemeManager.from_value(manager.settings.theme_mode).apply(app)
 
     window = MainWindow(

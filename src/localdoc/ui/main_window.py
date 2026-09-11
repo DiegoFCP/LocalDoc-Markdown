@@ -19,6 +19,7 @@ from localdoc.application.conversion_manager import ConversionManager
 from localdoc.application.settings_service import SettingsService
 from localdoc.domain.models import P0_EXTENSIONS, ConversionJob
 from localdoc.infrastructure.tesseract_adapter import TesseractAdapter
+from localdoc.ui.assets import branding_path, branding_pixmap
 from localdoc.ui.components import GhostButton, NavigationTabs
 from localdoc.ui.dialogs.settings_dialog import SettingsDialog
 from localdoc.ui.theme import ThemeManager
@@ -97,6 +98,11 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(24, 12, 24, 12)
         layout.setSpacing(12)
 
+        brand_icon = QLabel()
+        brand_icon.setObjectName("BrandIcon")
+        brand_icon.setPixmap(branding_pixmap("localdoc-app-icon.png", 28))
+        brand_icon.setAccessibleName("Icono LocalDoc")
+
         brand = QLabel("LocalDoc")
         brand.setObjectName("Brand")
         brand.setAccessibleName("LocalDoc")
@@ -117,6 +123,7 @@ class MainWindow(QMainWindow):
         )
         self.settings_button.clicked.connect(self._open_settings)
 
+        layout.addWidget(brand_icon)
         layout.addWidget(brand)
         layout.addWidget(self.navigation)
         layout.addStretch(1)
@@ -202,6 +209,6 @@ class MainWindow(QMainWindow):
             ThemeManager.from_value(theme_mode).apply(instance)
 
     def _apply_window_icon(self) -> None:
-        icon_path = Path(__file__).parent / "resources" / "branding" / "localdoc.ico"
+        icon_path = branding_path("localdoc.ico")
         if icon_path.exists():
             self.setWindowIcon(QIcon(str(icon_path)))

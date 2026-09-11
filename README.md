@@ -13,6 +13,7 @@ No document content is sent to cloud services by LocalDoc.
 - Drag-and-drop or file picker input.
 - Convert / History navigation.
 - Markdown preview for completed conversions.
+- Warm LocalDoc desktop identity with packaged app icon and conversion-state illustrations.
 - Searchable local history.
 - Light, dark, and system themes.
 - Local SQLite conversion history.

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from PySide6.QtWidgets import QApplication
 
+from localdoc.ui.assets import branding_path, branding_pixmap
 from localdoc.ui.components import GhostButton, IconButton, PrimaryButton, SecondaryButton
 from localdoc.ui.icons import file_type_icon, icon, status_icon
 from localdoc.ui.theme import ThemeManager, build_stylesheet
@@ -11,9 +12,9 @@ from localdoc.ui.tokens import DARK_TOKENS, LIGHT_TOKENS, ThemeMode
 def test_light_theme_stylesheet_uses_accessible_primary_color() -> None:
     stylesheet = build_stylesheet(LIGHT_TOKENS)
 
-    assert "#286BF4" in stylesheet
-    assert "#FF654F" in stylesheet
-    assert "#EAF2FF" in stylesheet
+    assert "#FFFCF7" in stylesheet
+    assert "#E85D43" in stylesheet
+    assert "#FFF0E8" in stylesheet
     assert "QPushButton:focus" in stylesheet
     assert "QPushButton#PrimaryButton" in stylesheet
 
@@ -21,9 +22,9 @@ def test_light_theme_stylesheet_uses_accessible_primary_color() -> None:
 def test_dark_theme_stylesheet_uses_dark_palette() -> None:
     stylesheet = build_stylesheet(DARK_TOKENS)
 
-    assert "#10131C" in stylesheet
-    assert "#EEF2FA" in stylesheet
-    assert "#8B6CFF" in stylesheet
+    assert "#17130F" in stylesheet
+    assert "#FFF7F0" in stylesheet
+    assert "#FF745C" in stylesheet
 
 
 def test_theme_manager_resolves_explicit_modes() -> None:
@@ -63,6 +64,22 @@ def test_functional_icons_are_available(qtbot) -> None:
     assert not icon("upload", "blue").isNull()
     assert not file_type_icon("PDF").isNull()
     assert not status_icon("completed").isNull()
+
+
+def test_branding_assets_are_available(qtbot) -> None:
+    expected_assets = [
+        "localdoc-app-icon.png",
+        "localdoc-loading.png",
+        "localdoc-completed.png",
+        "localdoc.ico",
+    ]
+
+    for filename in expected_assets:
+        assert branding_path(filename).exists()
+
+    assert not branding_pixmap("localdoc-app-icon.png", 32).isNull()
+    assert not branding_pixmap("localdoc-loading.png", 64).isNull()
+    assert not branding_pixmap("localdoc-completed.png", 64).isNull()
 
 
 def test_button_components_accept_functional_icons(qtbot) -> None:

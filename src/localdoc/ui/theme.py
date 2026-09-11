@@ -61,6 +61,10 @@ QFrame#TopBar {{
     border-bottom: 1px solid {colors.border};
 }}
 
+QLabel#BrandIcon {{
+    background: transparent;
+}}
+
 QLabel#Brand {{
     font-family: {typography.brand_family};
     font-size: {typography.display_size - 8}px;
@@ -118,15 +122,15 @@ QPushButton:disabled {{
 }}
 
 QPushButton#PrimaryButton {{
-    background: #FF654F;
-    border-color: #FF654F;
+    background: {colors.accent};
+    border-color: {colors.accent};
     color: #FFFFFF;
     font-weight: 700;
 }}
 
 QPushButton#PrimaryButton:hover {{
-    background: #E95440;
-    border-color: #E95440;
+    background: {colors.accent_hover};
+    border-color: {colors.accent_hover};
 }}
 
 QPushButton#SecondaryButton {{
@@ -215,9 +219,9 @@ QHeaderView::section {{
 }}
 
 QTextEdit {{
-    background: #1C2436;
-    color: #E7EDF7;
-    border: 1px solid #29344B;
+    background: {colors.surface};
+    color: {colors.text_primary};
+    border: 1px solid {colors.border};
     border-radius: {radius.radius_lg}px;
     font-family: {typography.mono_family};
     font-size: {typography.small_size}px;
@@ -249,8 +253,8 @@ QFrame#SurfacePanel {{
 }}
 
 QFrame#PrivacyNote {{
-    background: {colors.success_soft};
-    border: 1px solid {colors.success};
+    background: transparent;
+    border: 0;
     border-radius: {radius.radius_lg}px;
 }}
 

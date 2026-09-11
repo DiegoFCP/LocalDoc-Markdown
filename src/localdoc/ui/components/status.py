@@ -4,6 +4,7 @@ from PySide6.QtCore import QSize
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 from localdoc.domain.enums import JobStatus
+from localdoc.ui.assets import branding_pixmap
 from localdoc.ui.icons import status_icon
 
 
@@ -18,8 +19,8 @@ class StatusBanner(QWidget):
         super().__init__(parent)
         self.setObjectName("StatusBannerInfo")
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(12, 10, 12, 10)
-        layout.setSpacing(10)
+        layout.setContentsMargins(14, 12, 14, 12)
+        layout.setSpacing(12)
         self.icon = QLabel()
         self.icon.setAccessibleName("Icono de estado")
         content = QVBoxLayout()
@@ -54,8 +55,13 @@ class StatusBanner(QWidget):
         }
         title, description, tone = content[status]
         self.setObjectName(f"StatusBanner{tone}")
-        icon_key = status.value if status else "queued"
-        self.icon.setPixmap(status_icon(icon_key, 22).pixmap(QSize(22, 22)))
+        if status == JobStatus.COMPLETED:
+            self.icon.setPixmap(branding_pixmap("localdoc-completed.png", 58))
+        elif status == JobStatus.PROCESSING:
+            self.icon.setPixmap(branding_pixmap("localdoc-loading.png", 58))
+        else:
+            icon_key = status.value if status else "queued"
+            self.icon.setPixmap(status_icon(icon_key, 24).pixmap(QSize(24, 24)))
         self.title.setText(title)
         self.description.setText(description)
         self.style().unpolish(self)
