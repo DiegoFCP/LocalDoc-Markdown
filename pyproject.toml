@@ -20,7 +20,7 @@ build = ["pyinstaller>=6.22,<7"]
 dev = [
     "pytest>=9,<10",
     "pytest-qt>=4,<5",
-    "ruff>=0.14,<0.17",
+    "ruff>=0.14,<0.18",
 ]
 
 [tool.ruff]
